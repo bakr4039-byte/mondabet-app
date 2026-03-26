@@ -1,0 +1,49 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.dll
+*.pdb
+*.exe
+*.nupkg
+project.lock.json
+.vs/
+*.userprefs
+TestResults/
+
+# Flutter / Dart
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.iml
+.idea/
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+.nx/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+*.swp
+*.swo
+
+# Docker
+docker-compose.override.yml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Certs (dev keys)
+infra/certs/*.pem
