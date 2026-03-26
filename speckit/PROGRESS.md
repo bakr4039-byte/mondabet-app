@@ -15,7 +15,7 @@
 | 6 | Identity API + Dockerfile | `arch/backend-contracts.md`, `arch/infra.md` | DONE | Minimal API AuthEndpoints, Program.cs, appsettings.json, Dockerfile |
 | 7 | Keycloak Configuration | `arch/security.md` | DONE | infra/keycloak/mondabet-realm.json – realm, 5 clients, 3 roles, RS256 |
 | 8 | YARP Gateway | `arch/system-overview.md`, `arch/security.md` | DONE | Program.cs, appsettings with all 8 service routes, rate-limit policies, CORS, JWT validation, Dockerfile |
-| 9 | Flutter Mobile Auth | `mobile/flutter-spec.md`, `mobile/l10n.md` | NOT_STARTED | Scaffold, BLoC, Login/MFA/Biometric screens |
+| 9 | Flutter Mobile Auth | `mobile/flutter-spec.md`, `mobile/l10n.md` | DONE | pubspec, DI, go_router, AuthBloc (5 events), Login/MFA/Splash screens, AR+EN+UR translations, BLoC tests |
 | 10 | Tests + E2E Smoke | `testing/test-strategy.md` | DONE | 7 unit tests passing – LoginCommandHandler (4), RefreshTokenCommandHandler (3) |
 
 ## Sprint 2: Tenant + Employee (Future)
@@ -42,8 +42,8 @@
 | `arch/db-schema.md` | S1 (CP5), S2+ | DONE (S1) |
 | `arch/security.md` | S1 (CP4,7,8) | DONE (S1) |
 | `arch/infra.md` | S1 (CP1,2,6) | DONE |
-| `mobile/flutter-spec.md` | S1 (CP9), S5-6 | NOT_STARTED |
-| `mobile/l10n.md` | S1 (CP9) | NOT_STARTED |
+| `mobile/flutter-spec.md` | S1 (CP9), S5-6 | DONE (S1) |
+| `mobile/l10n.md` | S1 (CP9) | DONE (S1) |
 | `portals/white-label-portal.md` | S7 | NOT_STARTED |
 | `portals/customer-portal.md` | S8 | NOT_STARTED |
 | `backlog/jira-backlog.md` | All | Reference doc |
