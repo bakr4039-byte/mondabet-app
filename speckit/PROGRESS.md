@@ -18,17 +18,17 @@
 | 9 | Flutter Mobile Auth | `mobile/flutter-spec.md`, `mobile/l10n.md` | DONE | pubspec, DI, go_router, AuthBloc (5 events), Login/MFA/Splash screens, AR+EN+UR translations, BLoC tests |
 | 10 | Tests + E2E Smoke | `testing/test-strategy.md` | DONE | 7 unit tests passing – LoginCommandHandler (4), RefreshTokenCommandHandler (3) |
 
-## Sprint 2: Tenant + Employee (Future)
+## Sprint 2: Tenant + Employee
 
-| # | Checkpoint | Spec Source | Status |
-|---|-----------|-------------|--------|
-| - | Tenant CRUD API | `arch/backend-contracts.md` | NOT_STARTED |
-| - | Package CRUD API | `arch/backend-contracts.md` | NOT_STARTED |
-| - | Per-tenant schema provisioning | `arch/db-schema.md` | NOT_STARTED |
-| - | Employee CRUD API | `arch/backend-contracts.md` | NOT_STARTED |
-| - | Excel import | `portals/customer-portal.md` | NOT_STARTED |
-| - | SuperAdmin Portal scaffold | `portals/white-label-portal.md` | NOT_STARTED |
-| - | Customer Portal scaffold | `portals/customer-portal.md` | NOT_STARTED |
+| # | Checkpoint | Spec Source | Status | Notes |
+|---|-----------|-------------|--------|-------|
+| 1 | Tenant CRUD API | `arch/backend-contracts.md` | DONE | Domain, Application (CQRS), Infrastructure, API endpoints |
+| 2 | Package CRUD API | `arch/backend-contracts.md` | DONE | Package entity, CreatePackage command, ListPackages query, endpoints |
+| 3 | Per-tenant schema provisioning | `arch/db-schema.md` | DONE | EmployeeDbContext uses BaseDbContext per-tenant schema via TenantMiddleware |
+| 4 | Employee CRUD API | `arch/backend-contracts.md` | DONE | Full CRUD + GetPaged with search, soft-delete |
+| 5 | Excel import | `portals/customer-portal.md` | DONE | ClosedXML, IExcelImportService, ImportEmployeesCommand, /import endpoint |
+| 6 | SuperAdmin Portal scaffold | `portals/white-label-portal.md` | NOT_STARTED | Angular 18 |
+| 7 | Customer Portal scaffold | `portals/customer-portal.md` | NOT_STARTED | Angular 18 |
 
 ## Sprint 3-10: See `backlog/jira-backlog.md` for full breakdown
 
