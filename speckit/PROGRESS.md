@@ -30,7 +30,18 @@
 | 6 | SuperAdmin Portal scaffold | `portals/white-label-portal.md` | NOT_STARTED | Angular 18 |
 | 7 | Customer Portal scaffold | `portals/customer-portal.md` | NOT_STARTED | Angular 18 |
 
-## Sprint 3-10: See `backlog/jira-backlog.md` for full breakdown
+## Sprint 3: Attendance Service
+
+| # | Checkpoint | Spec Source | Status | Notes |
+|---|-----------|-------------|--------|-------|
+| 1 | Shift CRUD API | `arch/backend-contracts.md` | DONE | Shift entity, CreateShift/UpdateShift commands, ListShifts query |
+| 2 | Check-in API + geofence validation | `arch/backend-contracts.md`, `CLAUDE.md §8` | DONE | CheckInCommand + haversine GeofenceService |
+| 3 | Check-out API | `arch/backend-contracts.md` | DONE | CheckOutCommand, open check-in lookup |
+| 4 | Attendance list + summary API | `arch/backend-contracts.md` | DONE | ListCheckIns (paged), GetAttendanceSummary |
+| 5 | Duplicate check-in guard | `backlog/jira-backlog.md` ATT-08 | DONE | HasCheckInTodayAsync |
+| 6 | Geofence unit tests (ATT-07 P0) | `testing/test-strategy.md` | DONE | 6 tests: IsWithinGeofence + HaversineDistance |
+
+## Sprint 4-10: See `backlog/jira-backlog.md` for full breakdown
 
 ## Speckit Files Coverage
 
