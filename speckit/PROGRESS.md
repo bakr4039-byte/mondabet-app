@@ -60,7 +60,16 @@
 | 2 | FCM push adapter (NOTIF-02) | `backlog/jira-backlog.md` | DONE | FcmPushService v1 API, bulk via Task.WhenAll |
 | 3 | Bulk SMS/push endpoints (NOTIF-03) | `backlog/jira-backlog.md` | DONE | /notifications/sms, /push, /sms/bulk, /push/bulk |
 
-## Sprint 6-10: See `backlog/jira-backlog.md` for full breakdown
+## Sprint 6: Report Service
+
+| # | Checkpoint | Spec Source | Status | Notes |
+|---|-----------|-------------|--------|-------|
+| 1 | Attendance PDF report (RPT-01/RPT-06) | `backlog/jira-backlog.md` | DONE | QuestPDF landscape table with header/footer/pagination |
+| 2 | Attendance Excel report (RPT-02/RPT-07) | `backlog/jira-backlog.md` | DONE | ClosedXML workbook with auto-column sizing |
+| 3 | Company summary PDF + Excel (RPT-03) | `backlog/jira-backlog.md` | DONE | SuperAdmin only |
+| 4 | Report API endpoints | `arch/backend-contracts.md` | DONE | /reports/attendance?format=pdf\|xlsx, /reports/companies |
+
+## Sprint 7-10: See `backlog/jira-backlog.md` for full breakdown
 
 ## Speckit Files Coverage
 
