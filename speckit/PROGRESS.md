@@ -52,7 +52,15 @@
 | 5 | Leave list + get | `arch/backend-contracts.md` | DONE | Paged, filtered by type/status/employeeId |
 | 6 | Domain events | `arch/system-overview.md` | DONE | LeaveApprovedEvent, LeaveRejectedEvent (ready for MassTransit) |
 
-## Sprint 5-10: See `backlog/jira-backlog.md` for full breakdown
+## Sprint 5: Notification Service
+
+| # | Checkpoint | Spec Source | Status | Notes |
+|---|-----------|-------------|--------|-------|
+| 1 | Unifonic SMS adapter (NOTIF-01) | `backlog/jira-backlog.md` | DONE | UnifoncSmsService with HttpClient, bulk via comma-sep recipients |
+| 2 | FCM push adapter (NOTIF-02) | `backlog/jira-backlog.md` | DONE | FcmPushService v1 API, bulk via Task.WhenAll |
+| 3 | Bulk SMS/push endpoints (NOTIF-03) | `backlog/jira-backlog.md` | DONE | /notifications/sms, /push, /sms/bulk, /push/bulk |
+
+## Sprint 6-10: See `backlog/jira-backlog.md` for full breakdown
 
 ## Speckit Files Coverage
 
