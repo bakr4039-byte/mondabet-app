@@ -41,7 +41,18 @@
 | 5 | Duplicate check-in guard | `backlog/jira-backlog.md` ATT-08 | DONE | HasCheckInTodayAsync |
 | 6 | Geofence unit tests (ATT-07 P0) | `testing/test-strategy.md` | DONE | 6 tests: IsWithinGeofence + HaversineDistance |
 
-## Sprint 4-10: See `backlog/jira-backlog.md` for full breakdown
+## Sprint 4: Leave Management Service
+
+| # | Checkpoint | Spec Source | Status | Notes |
+|---|-----------|-------------|--------|-------|
+| 1 | LeaveRequest domain entity | `arch/db-schema.md` | DONE | LeaveType/Status enums, Approve/Reject with domain events |
+| 2 | Leave attachment entity | `arch/db-schema.md` | DONE | LeaveAttachment (MinIO file ref) |
+| 3 | Submit leave (Vacation/Permission/Excuse) | `arch/backend-contracts.md` | DONE | SubmitLeaveCommand, single unified endpoint |
+| 4 | Approve/Reject leave | `arch/backend-contracts.md` | DONE | Guard: only Pending leaves can be actioned |
+| 5 | Leave list + get | `arch/backend-contracts.md` | DONE | Paged, filtered by type/status/employeeId |
+| 6 | Domain events | `arch/system-overview.md` | DONE | LeaveApprovedEvent, LeaveRejectedEvent (ready for MassTransit) |
+
+## Sprint 5-10: See `backlog/jira-backlog.md` for full breakdown
 
 ## Speckit Files Coverage
 
