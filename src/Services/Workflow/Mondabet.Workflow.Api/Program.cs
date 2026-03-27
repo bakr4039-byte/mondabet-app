@@ -4,6 +4,7 @@ using Mondabet.Shared.Infrastructure;
 using Mondabet.Workflow.Api.Endpoints;
 using Mondabet.Workflow.Application.Commands.CreateWorkflow;
 using Mondabet.Workflow.Infrastructure;
+using Mondabet.Workflow.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,7 @@ builder.Services.AddWorkflowInfrastructure(builder.Configuration);
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(CreateWorkflowCommandHandler).Assembly));
 
+builder.Services.AddHealthChecks();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -46,5 +48,12 @@ app.UseMiddleware<TenantMiddleware>();
 
 app.MapWorkflowEndpoints();
 app.MapHealthChecks("/health");
+
+// Auto-migrate on startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<WorkflowDbContext>();
+    await db.Database.EnsureCreatedAsync();
+}
 
 app.Run();

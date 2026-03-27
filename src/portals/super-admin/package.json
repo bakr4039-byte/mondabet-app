@@ -25,10 +25,10 @@
     "@ngrx/entity": "^18.0.0",
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^8.0.0",
-    "ngx-charts": "^22.0.0",
     "rxjs": "^7.8.0",
     "tslib": "^2.6.0",
-    "zone.js": "^0.14.0"
+    "zone.js": "^0.14.0",
+    "@swimlane/ngx-charts": "^23.0.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^18.0.0",

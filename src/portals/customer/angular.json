@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "super-admin": {
+    "customer": {
       "projectType": "application",
       "root": "",
       "sourceRoot": "src",
@@ -11,7 +11,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/super-admin",
+            "outputPath": "dist/customer",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": ["zone.js"],
@@ -42,8 +42,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
-            "production": { "buildTarget": "super-admin:build:production" },
-            "development": { "buildTarget": "super-admin:build:development" }
+            "production": { "buildTarget": "customer:build:production" },
+            "development": { "buildTarget": "customer:build:development" }
           },
           "defaultConfiguration": "development"
         },

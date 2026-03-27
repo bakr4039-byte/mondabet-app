@@ -129,7 +129,6 @@
       {
         "name": "rsa-generated",
         "providerId": "rsa-generated",
-        "providerType": "org.keycloak.keys.KeyProvider",
         "config": {
           "priority": ["100"],
           "algorithm": ["RS256"],

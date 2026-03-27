@@ -4,6 +4,7 @@ using Mondabet.Leave.Application.Commands.SubmitLeave;
 using Mondabet.Leave.Infrastructure;
 using Mondabet.Shared.Application;
 using Mondabet.Shared.Infrastructure;
+using Mondabet.Leave.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,7 @@ builder.Services.AddLeaveInfrastructure(builder.Configuration);
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(SubmitLeaveCommandHandler).Assembly));
 
+builder.Services.AddHealthChecks();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -46,5 +48,12 @@ app.UseMiddleware<TenantMiddleware>();
 
 app.MapLeaveEndpoints();
 app.MapHealthChecks("/health");
+
+// Auto-migrate on startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<LeaveDbContext>();
+    await db.Database.EnsureCreatedAsync();
+}
 
 app.Run();

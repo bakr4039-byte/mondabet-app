@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { NgIf } from '@angular/common';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -13,7 +14,7 @@ import { environment } from '../../../../environments/environment';
   selector: 'app-login',
   standalone: true,
   imports: [
-    ReactiveFormsModule, MatCardModule, MatFormFieldModule,
+    NgIf, ReactiveFormsModule, MatCardModule, MatFormFieldModule,
     MatInputModule, MatButtonModule, TranslateModule,
   ],
   template: `

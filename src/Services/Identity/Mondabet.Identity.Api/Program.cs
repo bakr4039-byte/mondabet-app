@@ -7,6 +7,7 @@ using Mondabet.Identity.Infrastructure;
 using Mondabet.Shared.Application.Behaviors;
 using Mondabet.Shared.Infrastructure;
 using System.Security.Cryptography;
+using Mondabet.Identity.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -87,6 +88,13 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+// Auto-migrate on startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<IdentityDbContext>();
+    await db.Database.EnsureCreatedAsync();
 }
 
 app.Run();

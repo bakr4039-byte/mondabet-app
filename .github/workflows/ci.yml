@@ -50,15 +50,31 @@ jobs:
     if: github.ref == 'refs/heads/main'
     strategy:
       matrix:
-        service:
-          - attendance
-          - leave
-          - employee
-          - workflow
-          - clarification
-          - notification
-          - report
-          - tenant
+        include:
+          - service: attendance
+            dir: Attendance
+            api: Mondabet.Attendance.Api
+          - service: leave
+            dir: Leave
+            api: Mondabet.Leave.Api
+          - service: employee
+            dir: Employee
+            api: Mondabet.Employee.Api
+          - service: workflow
+            dir: Workflow
+            api: Mondabet.Workflow.Api
+          - service: clarification
+            dir: Clarification
+            api: Mondabet.Clarification.Api
+          - service: notification
+            dir: Notification
+            api: Mondabet.Notification.Api
+          - service: report
+            dir: Report
+            api: Mondabet.Report.Api
+          - service: tenant
+            dir: Tenant
+            api: Mondabet.Tenant.Api
     steps:
       - uses: actions/checkout@v4
 
@@ -72,8 +88,8 @@ jobs:
       - name: Build and push ${{ matrix.service }}
         uses: docker/build-push-action@v5
         with:
-          context: src/Services/${{ matrix.service }}
-          file: src/Services/${{ matrix.service }}/Dockerfile
+          context: src/Services/${{ matrix.dir }}
+          file: src/Services/${{ matrix.dir }}/${{ matrix.api }}/Dockerfile
           push: true
           tags: |
             ${{ env.IMAGE_PREFIX }}-${{ matrix.service }}:latest

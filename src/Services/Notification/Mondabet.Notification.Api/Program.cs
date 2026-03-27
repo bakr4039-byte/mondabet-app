@@ -26,6 +26,7 @@ builder.Services.AddNotificationInfrastructure();
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(SendSmsCommandHandler).Assembly));
 
+builder.Services.AddHealthChecks();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

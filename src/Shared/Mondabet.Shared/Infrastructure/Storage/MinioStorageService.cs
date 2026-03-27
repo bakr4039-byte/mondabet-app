@@ -50,17 +50,18 @@ public sealed class MinioStorageService : IStorageService
     public async Task DeleteAsync(string bucket, string objectKey, CancellationToken ct = default)
     {
         var args = new RemoveObjectArgs().WithBucket(bucket).WithObject(objectKey);
-        await _client.RemoveObjectAsync(args, ct).ConfigureAwait(false);
+        await _client.RemoveObjectAsync(args).ConfigureAwait(false);
     }
 
     private async Task EnsureBucketAsync(string bucket, CancellationToken ct)
     {
+        _ = ct; // Minio v6 args-based API does not accept CancellationToken separately
         var existsArgs = new BucketExistsArgs().WithBucket(bucket);
-        bool exists = await _client.BucketExistsAsync(existsArgs, ct).ConfigureAwait(false);
+        bool exists = await _client.BucketExistsAsync(existsArgs).ConfigureAwait(false);
         if (!exists)
         {
             var makeArgs = new MakeBucketArgs().WithBucket(bucket);
-            await _client.MakeBucketAsync(makeArgs, ct).ConfigureAwait(false);
+            await _client.MakeBucketAsync(makeArgs).ConfigureAwait(false);
         }
     }
 }

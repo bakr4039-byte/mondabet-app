@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -19,7 +19,7 @@ import { selectAllLeaves } from '../../store/leave.reducer';
   selector: 'app-leave-queue',
   standalone: true,
   imports: [
-    AsyncPipe, ReactiveFormsModule,
+    AsyncPipe, NgTemplateOutlet, ReactiveFormsModule,
     MatTabsModule, MatTableModule, MatButtonModule, MatIconModule,
     MatDialogModule, MatFormFieldModule, MatInputModule, MatChipsModule,
     TranslateModule,

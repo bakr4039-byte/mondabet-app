@@ -6,6 +6,7 @@ using Mondabet.Employee.Api.Endpoints;
 using Mondabet.Employee.Infrastructure;
 using Mondabet.Shared.Application.Behaviors;
 using Mondabet.Shared.Infrastructure;
+using Mondabet.Employee.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,6 +56,13 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+// Auto-migrate on startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<EmployeeDbContext>();
+    await db.Database.EnsureCreatedAsync();
 }
 
 app.Run();

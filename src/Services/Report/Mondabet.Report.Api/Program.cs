@@ -28,6 +28,7 @@ builder.Services.AddReportInfrastructure();
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(AttendanceReportQueryHandler).Assembly));
 
+builder.Services.AddHealthChecks();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

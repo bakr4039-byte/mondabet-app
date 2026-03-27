@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -24,7 +25,7 @@ interface AttendanceSummary {
   selector: 'app-attendance-reports',
   standalone: true,
   imports: [
-    ReactiveFormsModule,
+    DecimalPipe, ReactiveFormsModule,
     MatCardModule, MatButtonModule, MatIconModule,
     MatFormFieldModule, MatInputModule, MatTableModule,
     MatProgressBarModule, TranslateModule,
