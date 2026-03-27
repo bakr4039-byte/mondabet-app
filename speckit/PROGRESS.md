@@ -69,7 +69,21 @@
 | 3 | Company summary PDF + Excel (RPT-03) | `backlog/jira-backlog.md` | DONE | SuperAdmin only |
 | 4 | Report API endpoints | `arch/backend-contracts.md` | DONE | /reports/attendance?format=pdf\|xlsx, /reports/companies |
 
-## Sprint 7-10: See `backlog/jira-backlog.md` for full breakdown
+## Sprint 7: Workflow + Clarification
+
+| # | Checkpoint | Spec Source | Status | Notes |
+|---|-----------|-------------|--------|-------|
+| 1 | WorkflowDefinition entity + CRUD | `arch/db-schema.md`, `arch/backend-contracts.md` | DONE | WorkflowAppliesTo enum, StepsJson, CreateWorkflow/UpdateWorkflow/ListWorkflows |
+| 2 | WorkflowInstance entity + Advance/Reject | `arch/system-overview.md §9` | DONE | Advance() increments step or fires WorkflowCompletedEvent; Reject() fires WorkflowRejectedEvent |
+| 3 | StartWorkflow command | `arch/backend-contracts.md` | DONE | Counts steps from StepsJson, creates instance |
+| 4 | AdvanceWorkflow command | `arch/backend-contracts.md` | DONE | Guard: only Active instances; optional Reject dto |
+| 5 | MassTransit LeaveRequestedConsumer | `arch/system-overview.md §9` | DONE | Receives LeaveRequestedMessage, starts workflow instance |
+| 6 | Clarification domain entity | `arch/db-schema.md` | DONE | ClarificationStatus enum, Respond() method |
+| 7 | Clarification Application (CQRS) | `arch/backend-contracts.md` | DONE | Create/Respond commands + ListClarifications query |
+| 8 | Clarification Infrastructure | `arch/db-schema.md` | DONE | ClarificationDbContext, EF configs, repository, DI |
+| 9 | Clarification API + Dockerfile | `arch/backend-contracts.md` | DONE | POST /, GET /employee/{id}, PUT /{id}/respond |
+
+## Sprint 8-10: See `backlog/jira-backlog.md` for full breakdown
 
 ## Speckit Files Coverage
 
