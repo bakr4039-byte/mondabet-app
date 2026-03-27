@@ -1,0 +1,20 @@
+@use '@angular/material' as mat;
+@include mat.core();
+
+// CSS variables for white-label theming
+:root {
+  --primary: #1976D2;
+  --secondary: #424242;
+}
+
+$primary-palette: mat.define-palette(mat.$blue-palette, 700);
+$accent-palette: mat.define-palette(mat.$orange-palette, 400);
+$theme: mat.define-light-theme((
+  color: (primary: $primary-palette, accent: $accent-palette),
+  typography: mat.define-typography-config(),
+  density: 0,
+));
+@include mat.all-component-themes($theme);
+
+html, body { height: 100%; margin: 0; font-family: Roboto, sans-serif; }
+[dir="rtl"] { direction: rtl; text-align: right; }

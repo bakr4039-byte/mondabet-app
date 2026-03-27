@@ -1,0 +1,46 @@
+{
+  "auth": { "login": "Sign In", "username": "Username", "password": "Password", "sign_in": "Sign In" },
+  "nav": {
+    "tenants": "Companies",
+    "packages": "Packages",
+    "reports": "Reports"
+  },
+  "tenants": {
+    "title": "Companies",
+    "add": "Add Company",
+    "edit": "Edit Company",
+    "name": "Company Name",
+    "code": "Code",
+    "admin_email": "Admin Email",
+    "admin_mobile": "Admin Mobile",
+    "primary_color": "Primary Color",
+    "secondary_color": "Secondary Color",
+    "package": "Package",
+    "subscription_ends": "Subscription Ends"
+  },
+  "packages": {
+    "title": "Packages",
+    "add": "Add Package",
+    "name": "Package Name",
+    "max_users": "Max Users",
+    "price": "Monthly Price (SAR)",
+    "features": "Features JSON"
+  },
+  "reports": {
+    "company_title": "Company Reports",
+    "download_pdf": "Download PDF",
+    "download_excel": "Download Excel",
+    "company": "Company",
+    "employees": "Employees",
+    "active_today": "Active Today"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "add": "Add",
+    "search": "Search",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive"
+  }
+}

@@ -83,7 +83,67 @@
 | 8 | Clarification Infrastructure | `arch/db-schema.md` | DONE | ClarificationDbContext, EF configs, repository, DI |
 | 9 | Clarification API + Dockerfile | `arch/backend-contracts.md` | DONE | POST /, GET /employee/{id}, PUT /{id}/respond |
 
-## Sprint 8-10: See `backlog/jira-backlog.md` for full breakdown
+## Sprint 8: Flutter Mobile Completion
+
+| # | Checkpoint | Spec Source | Status | Notes |
+|---|-----------|-------------|--------|-------|
+| 1 | White-label theming (TenantConfig + ThemeService) | `mobile/flutter-spec.md` | DONE | Hive persistence; ThemeData from hex colors |
+| 2 | Shift + AttendanceRecord entities | `arch/db-schema.md` | DONE | Haversine geofence client-side in AttendanceBloc |
+| 3 | Check-in screen (Google Maps + geofence) | `mobile/flutter-spec.md` | DONE | Live position stream; button disabled when outside radius |
+| 4 | Leave screens (Vacation / Permission / Excuse) | `mobile/flutter-spec.md` | DONE | FilePicker for excuse attachment; TabController list |
+| 5 | Reports screen (BarChart + download) | `mobile/flutter-spec.md` | DONE | fl_chart BarChart; Dio download to temp dir |
+| 6 | FCM v1 push notifications | `backlog/jira-backlog.md` NOTIF-02 | DONE | Firebase + flutter_local_notifications foreground handler |
+| 7 | Clarification response screen | `arch/backend-contracts.md` | DONE | Shows question; text field + submit if pending |
+| 8 | Home screen NavigationBar + routing | `mobile/flutter-spec.md` | DONE | 4 tabs; go_router routes; MultiBlocProvider |
+| 9 | Full DI + i18n (AR/EN/UR extended) | `mobile/l10n.md` | DONE | GetIt; all new keys added to 3 locales |
+| 10 | BLoC tests (Attendance + Leave) | `testing/test-strategy.md` | DONE | 7 blocTest cases |
+
+## Sprint 9: SuperAdmin Angular Portal
+
+| # | Checkpoint | Spec Source | Status | Notes |
+|---|-----------|-------------|--------|-------|
+| 1 | Package setup (Angular 18, NgRx, Jest) | `portals/white-label-portal.md` | DONE | package.json; app.config.ts with provideStore |
+| 2 | Auth interceptor + guard | `arch/security.md` | DONE | HttpInterceptorFn; 401 → /login redirect |
+| 3 | Shell layout (sidenav + lang switcher) | `portals/white-label-portal.md` | DONE | RTL/LTR dir toggle; logout |
+| 4 | Tenant NgRx slice (reducer + effects) | `arch/backend-contracts.md` | DONE | Entity adapter; load/create/update effects |
+| 5 | Tenant list + form components | `portals/white-label-portal.md` | DONE | Search filter; create/edit form with package selector |
+| 6 | Package NgRx slice | `arch/backend-contracts.md` | DONE | loadPackages effect |
+| 7 | Reports page (charts + table) | `portals/white-label-portal.md` | DONE | ngx-charts bar; PDF/Excel export via window.open |
+| 8 | Tenant reducer unit tests | `testing/test-strategy.md` | DONE | 6 Jest tests |
+
+## Sprint 10: Customer Portal
+
+| # | Checkpoint | Spec Source | Status | Notes |
+|---|-----------|-------------|--------|-------|
+| 1 | App config + routes + interceptor | `portals/customer-portal.md` | DONE | provideStore; lazy routes for all features |
+| 2 | White-label CSS theming | `portals/customer-portal.md` | DONE | GET /tenants/config → --primary/--secondary CSS vars |
+| 3 | Employee NgRx slice (actions/reducer/effects) | `arch/backend-contracts.md` | DONE | Entity adapter; load/create/delete |
+| 4 | Employee list (search + Excel import) | `portals/customer-portal.md` | DONE | FormData POST to /employees/import; snackbar |
+| 5 | Employee form (Iqama validation) | `portals/customer-portal.md` | DONE | Pattern /^\d{10}$/ |
+| 6 | Leave NgRx slice (actions/reducer/effects) | `arch/backend-contracts.md` | DONE | approve/reject effects |
+| 7 | Leave queue (tabs: Pending/Approved/Rejected) | `portals/customer-portal.md` | DONE | Approve/Reject with comment prompt |
+| 8 | Workflow builder (CDK DragDrop step reorder) | `portals/customer-portal.md` | DONE | PUT /workflows/definition |
+| 9 | Attendance reports (date filter + export) | `portals/customer-portal.md` | DONE | PDF/Excel via window.open |
+| 10 | Bulk messages + clarification requests | `portals/customer-portal.md` | DONE | Multi-select; POST /notifications/bulk + /clarifications/bulk |
+| 11 | i18n files (AR/EN/UR) | `mobile/l10n.md` | DONE | Full flat-key JSON for all portal features |
+| 12 | Leave reducer unit tests | `testing/test-strategy.md` | DONE | 6 Jest tests |
+
+## Sprint 11: Infrastructure
+
+| # | Checkpoint | Spec Source | Status | Notes |
+|---|-----------|-------------|--------|-------|
+| 1 | MinIO pre-signed URL service (INFRA-13) | `arch/infra.md` | DONE | IStorageService + MinioStorageService; presigned PUT/GET/Delete |
+| 2 | Helm chart (mondabet-api) | `arch/infra.md` INFRA-07/08 | DONE | Deployment + Service + Ingress + HPA templates |
+| 3 | GitHub Actions CI pipeline (INFRA-09) | `arch/infra.md` | DONE | .NET build/test, Docker push (matrix), Helm lint, Angular test/build, Flutter test/build |
+| 4 | OpenTelemetry instrumentation (INFRA-11) | `arch/infra.md` | DONE | AddMondabetTracing extension; OTLP exporter; health endpoint filtered |
+
+## Sprint 12: Security Hardening
+
+| # | Checkpoint | Spec Source | Status | Notes |
+|---|-----------|-------------|--------|-------|
+| 1 | RBAC enforcement tests (SEC-01) | `arch/security.md` | DONE | RbacPolicyTests – role isolation + tenant claim validation |
+| 2 | AES-256 Iqama encryption (SEC-02) | `arch/security.md` | DONE | AesEncryptionService (random IV); round-trip + tamper tests |
+| 3 | Audit log table (SEC-06) | `arch/security.md` | DONE | AuditLog entity, IAuditLogger, DbAuditLogger, AuditDbContext in 'audit' schema |
 
 ## Speckit Files Coverage
 
@@ -91,13 +151,13 @@
 |-----------|---------------|--------|
 | `CLAUDE.md` | All | Reference doc (no code output) |
 | `arch/system-overview.md` | S1 (CP1,3,8) | DONE |
-| `arch/backend-contracts.md` | S1 (CP4-6), S2+ | DONE (S1) |
-| `arch/db-schema.md` | S1 (CP5), S2+ | DONE (S1) |
-| `arch/security.md` | S1 (CP4,7,8) | DONE (S1) |
-| `arch/infra.md` | S1 (CP1,2,6) | DONE |
-| `mobile/flutter-spec.md` | S1 (CP9), S5-6 | DONE (S1) |
-| `mobile/l10n.md` | S1 (CP9) | DONE (S1) |
-| `portals/white-label-portal.md` | S7 | NOT_STARTED |
-| `portals/customer-portal.md` | S8 | NOT_STARTED |
+| `arch/backend-contracts.md` | S1 (CP4-6), S2+ | DONE |
+| `arch/db-schema.md` | S1 (CP5), S2+ | DONE |
+| `arch/security.md` | S1 (CP4,7,8), S12 | DONE |
+| `arch/infra.md` | S1 (CP1,2,6), S11 | DONE |
+| `mobile/flutter-spec.md` | S1 (CP9), S8 | DONE |
+| `mobile/l10n.md` | S1 (CP9), S8, S10 | DONE |
+| `portals/white-label-portal.md` | S9 | DONE |
+| `portals/customer-portal.md` | S10 | DONE |
 | `backlog/jira-backlog.md` | All | Reference doc |
-| `testing/test-strategy.md` | S1 (CP10), S10 | DONE (S1) |
+| `testing/test-strategy.md` | S1 (CP10), S8, S9, S10, S12 | DONE |

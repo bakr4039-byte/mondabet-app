@@ -1,0 +1,86 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "search": "Search",
+    "loading": "Loading...",
+    "no_data": "No data available",
+    "submit": "Submit"
+  },
+  "auth": {
+    "login": "Sign In",
+    "username": "Username",
+    "password": "Password",
+    "logout": "Logout"
+  },
+  "nav": {
+    "employees": "Employees",
+    "leaves": "Leave Requests",
+    "workflow": "Workflow",
+    "reports": "Reports",
+    "messages": "Messages"
+  },
+  "employees": {
+    "title": "Employees",
+    "add": "Add Employee",
+    "import": "Import Excel",
+    "name": "Name",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "iqama": "Iqama Number",
+    "job_title": "Job Title",
+    "department": "Department"
+  },
+  "leaves": {
+    "title": "Leave Requests",
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "employee": "Employee",
+    "type": "Type",
+    "dates": "Dates",
+    "reason": "Reason",
+    "approve": "Approve",
+    "reject": "Reject",
+    "types": {
+      "vacation": "Vacation",
+      "permission": "Permission",
+      "excuse": "Excuse"
+    }
+  },
+  "workflow": {
+    "title": "Workflow Builder",
+    "steps": "Approval Steps",
+    "add_step": "Add Step",
+    "approver_name": "Approver Name",
+    "approver_id": "Approver ID",
+    "role": "Role",
+    "empty": "No steps defined. Add steps to build your workflow."
+  },
+  "reports": {
+    "title": "Attendance Reports",
+    "from": "From Date",
+    "to": "To Date",
+    "generate": "Generate",
+    "employee": "Employee",
+    "days_present": "Days Present",
+    "days_absent": "Days Absent",
+    "total_hours": "Total Hours",
+    "late_count": "Late Count"
+  },
+  "messages": {
+    "title": "Messages & Clarifications",
+    "select_employees": "Select Employees",
+    "select_all": "Select All",
+    "clear": "Clear",
+    "selected": "selected",
+    "push_notification": "Push Notification",
+    "title_field": "Title",
+    "body": "Message Body",
+    "send": "Send Notification",
+    "clarification_request": "Clarification Request",
+    "question": "Question",
+    "deadline": "Response Deadline",
+    "send_clarification": "Send Clarification"
+  }
+}

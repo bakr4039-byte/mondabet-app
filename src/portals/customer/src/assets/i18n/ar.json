@@ -1,0 +1,86 @@
+{
+  "common": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "search": "بحث",
+    "loading": "جاري التحميل...",
+    "no_data": "لا توجد بيانات",
+    "submit": "إرسال"
+  },
+  "auth": {
+    "login": "تسجيل الدخول",
+    "username": "اسم المستخدم",
+    "password": "كلمة المرور",
+    "logout": "تسجيل الخروج"
+  },
+  "nav": {
+    "employees": "الموظفون",
+    "leaves": "طلبات الإجازة",
+    "workflow": "سير العمل",
+    "reports": "التقارير",
+    "messages": "الرسائل"
+  },
+  "employees": {
+    "title": "الموظفون",
+    "add": "إضافة موظف",
+    "import": "استيراد Excel",
+    "name": "الاسم",
+    "first_name": "الاسم الأول",
+    "last_name": "الاسم الأخير",
+    "iqama": "رقم الإقامة",
+    "job_title": "المسمى الوظيفي",
+    "department": "القسم"
+  },
+  "leaves": {
+    "title": "طلبات الإجازة",
+    "pending": "قيد الانتظار",
+    "approved": "موافق عليها",
+    "rejected": "مرفوضة",
+    "employee": "الموظف",
+    "type": "النوع",
+    "dates": "التواريخ",
+    "reason": "السبب",
+    "approve": "موافقة",
+    "reject": "رفض",
+    "types": {
+      "vacation": "إجازة",
+      "permission": "إذن",
+      "excuse": "عذر"
+    }
+  },
+  "workflow": {
+    "title": "منشئ سير العمل",
+    "steps": "خطوات الموافقة",
+    "add_step": "إضافة خطوة",
+    "approver_name": "اسم المعتمد",
+    "approver_id": "معرّف المعتمد",
+    "role": "الدور",
+    "empty": "لا توجد خطوات. أضف خطوات لبناء سير العمل."
+  },
+  "reports": {
+    "title": "تقارير الحضور",
+    "from": "من تاريخ",
+    "to": "إلى تاريخ",
+    "generate": "إنشاء التقرير",
+    "employee": "الموظف",
+    "days_present": "أيام الحضور",
+    "days_absent": "أيام الغياب",
+    "total_hours": "إجمالي الساعات",
+    "late_count": "عدد التأخيرات"
+  },
+  "messages": {
+    "title": "الرسائل والتوضيحات",
+    "select_employees": "اختيار الموظفين",
+    "select_all": "اختيار الكل",
+    "clear": "مسح",
+    "selected": "محدد",
+    "push_notification": "إشعار فوري",
+    "title_field": "العنوان",
+    "body": "نص الرسالة",
+    "send": "إرسال الإشعار",
+    "clarification_request": "طلب توضيح",
+    "question": "السؤال",
+    "deadline": "الموعد النهائي للرد",
+    "send_clarification": "إرسال التوضيح"
+  }
+}

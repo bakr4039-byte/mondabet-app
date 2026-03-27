@@ -1,0 +1,6 @@
+apiVersion: v2
+name: mondabet-api
+description: Mondabet microservice Helm chart (one chart per service, values override per env)
+type: application
+version: 1.0.0
+appVersion: "1.0.0"

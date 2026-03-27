@@ -1,0 +1,86 @@
+{
+  "common": {
+    "save": "محفوظ کریں",
+    "cancel": "منسوخ",
+    "search": "تلاش",
+    "loading": "لوڈ ہو رہا ہے...",
+    "no_data": "کوئی ڈیٹا نہیں",
+    "submit": "جمع کریں"
+  },
+  "auth": {
+    "login": "سائن ان",
+    "username": "صارف نام",
+    "password": "پاس ورڈ",
+    "logout": "سائن آؤٹ"
+  },
+  "nav": {
+    "employees": "ملازمین",
+    "leaves": "چھٹی کی درخواستیں",
+    "workflow": "ورک فلو",
+    "reports": "رپورٹس",
+    "messages": "پیغامات"
+  },
+  "employees": {
+    "title": "ملازمین",
+    "add": "ملازم شامل کریں",
+    "import": "Excel درآمد کریں",
+    "name": "نام",
+    "first_name": "پہلا نام",
+    "last_name": "آخری نام",
+    "iqama": "اقامہ نمبر",
+    "job_title": "عہدہ",
+    "department": "شعبہ"
+  },
+  "leaves": {
+    "title": "چھٹی کی درخواستیں",
+    "pending": "زیر التواء",
+    "approved": "منظور شدہ",
+    "rejected": "مسترد شدہ",
+    "employee": "ملازم",
+    "type": "قسم",
+    "dates": "تاریخیں",
+    "reason": "وجہ",
+    "approve": "منظور",
+    "reject": "مسترد",
+    "types": {
+      "vacation": "چھٹی",
+      "permission": "اجازت",
+      "excuse": "عذر"
+    }
+  },
+  "workflow": {
+    "title": "ورک فلو بلڈر",
+    "steps": "منظوری کے مراحل",
+    "add_step": "مرحلہ شامل کریں",
+    "approver_name": "منظوری دینے والے کا نام",
+    "approver_id": "منظوری دینے والے کی ID",
+    "role": "کردار",
+    "empty": "کوئی مرحلہ نہیں۔ ورک فلو بنانے کے لیے مراحل شامل کریں۔"
+  },
+  "reports": {
+    "title": "حاضری کی رپورٹس",
+    "from": "شروع تاریخ",
+    "to": "اختتام تاریخ",
+    "generate": "رپورٹ بنائیں",
+    "employee": "ملازم",
+    "days_present": "حاضری کے دن",
+    "days_absent": "غیر حاضری کے دن",
+    "total_hours": "کل گھنٹے",
+    "late_count": "تاخیر کی تعداد"
+  },
+  "messages": {
+    "title": "پیغامات اور وضاحتیں",
+    "select_employees": "ملازمین منتخب کریں",
+    "select_all": "سب منتخب کریں",
+    "clear": "صاف کریں",
+    "selected": "منتخب",
+    "push_notification": "فوری اطلاع",
+    "title_field": "عنوان",
+    "body": "پیغام کا متن",
+    "send": "اطلاع بھیجیں",
+    "clarification_request": "وضاحت کی درخواست",
+    "question": "سوال",
+    "deadline": "جواب کی آخری تاریخ",
+    "send_clarification": "وضاحت بھیجیں"
+  }
+}

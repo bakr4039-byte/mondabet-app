@@ -1,0 +1,46 @@
+{
+  "auth": { "login": "تسجيل الدخول", "username": "اسم المستخدم", "password": "كلمة المرور", "sign_in": "دخول" },
+  "nav": {
+    "tenants": "الشركات",
+    "packages": "الباقات",
+    "reports": "التقارير"
+  },
+  "tenants": {
+    "title": "الشركات",
+    "add": "إضافة شركة",
+    "edit": "تعديل الشركة",
+    "name": "اسم الشركة",
+    "code": "الرمز",
+    "admin_email": "بريد المدير",
+    "admin_mobile": "جوال المدير",
+    "primary_color": "اللون الأساسي",
+    "secondary_color": "اللون الثانوي",
+    "package": "الباقة",
+    "subscription_ends": "نهاية الاشتراك"
+  },
+  "packages": {
+    "title": "الباقات",
+    "add": "إضافة باقة",
+    "name": "اسم الباقة",
+    "max_users": "أقصى عدد مستخدمين",
+    "price": "السعر الشهري (ريال)",
+    "features": "الميزات JSON"
+  },
+  "reports": {
+    "company_title": "تقارير الشركات",
+    "download_pdf": "تحميل PDF",
+    "download_excel": "تحميل Excel",
+    "company": "الشركة",
+    "employees": "الموظفون",
+    "active_today": "نشط اليوم"
+  },
+  "common": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "add": "إضافة",
+    "search": "بحث",
+    "status": "الحالة",
+    "active": "نشط",
+    "inactive": "غير نشط"
+  }
+}

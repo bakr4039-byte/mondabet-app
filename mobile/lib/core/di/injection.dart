@@ -1,7 +1,13 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
-import 'package:injectable/injectable.dart';
 
+import '../../features/attendance/data/datasources/attendance_remote_datasource.dart';
+import '../../features/attendance/data/repositories/attendance_repository_impl.dart';
+import '../../features/attendance/domain/repositories/attendance_repository.dart';
+import '../../features/attendance/domain/usecases/check_in_usecase.dart';
+import '../../features/attendance/domain/usecases/check_out_usecase.dart';
+import '../../features/attendance/domain/usecases/get_current_shift_usecase.dart';
+import '../../features/attendance/presentation/bloc/attendance_bloc.dart';
 import '../../features/auth/data/datasources/auth_remote_datasource.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
@@ -11,7 +17,18 @@ import '../../features/auth/domain/usecases/login_usecase.dart';
 import '../../features/auth/domain/usecases/logout_usecase.dart';
 import '../../features/auth/domain/usecases/verify_mfa_usecase.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
+import '../../features/leave/data/datasources/leave_remote_datasource.dart';
+import '../../features/leave/data/repositories/leave_repository_impl.dart';
+import '../../features/leave/domain/repositories/leave_repository.dart';
+import '../../features/leave/domain/usecases/get_my_leaves_usecase.dart';
+import '../../features/leave/domain/usecases/submit_leave_usecase.dart';
+import '../../features/leave/presentation/bloc/leave_bloc.dart';
+import '../../features/reports/data/datasources/report_remote_datasource.dart';
+import '../../features/reports/data/repositories/report_repository_impl.dart';
+import '../../features/reports/domain/repositories/report_repository.dart';
+import '../../features/reports/presentation/bloc/reports_bloc.dart';
 import '../network/api_client.dart';
+import '../services/fcm_service.dart';
 
 final getIt = GetIt.instance;
 
@@ -22,27 +39,21 @@ void configureDependencies() {
       aOptions: AndroidOptions(encryptedSharedPreferences: true),
     ),
   );
-
   getIt.registerSingleton<ApiClient>(ApiClient(getIt()));
+  getIt.registerSingleton<FcmService>(FcmService());
 
   // Auth
   getIt.registerLazySingleton<AuthRemoteDataSource>(
     () => AuthRemoteDataSourceImpl(getIt<ApiClient>().dio),
   );
-
   getIt.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(
-      remoteDataSource: getIt(),
-      storage: getIt(),
-    ),
+    () => AuthRepositoryImpl(remoteDataSource: getIt(), storage: getIt()),
   );
-
   getIt.registerLazySingleton(() => LoginUseCase(getIt()));
   getIt.registerLazySingleton(() => VerifyMfaUseCase(getIt()));
   getIt.registerLazySingleton(() => BiometricChallengeUseCase(getIt()));
   getIt.registerLazySingleton(() => BiometricVerifyUseCase(getIt()));
   getIt.registerLazySingleton(() => LogoutUseCase(getIt()));
-
   getIt.registerFactory<AuthBloc>(
     () => AuthBloc(
       loginUseCase: getIt(),
@@ -53,4 +64,44 @@ void configureDependencies() {
       storage: getIt(),
     ),
   );
+
+  // Attendance
+  getIt.registerLazySingleton<AttendanceRemoteDataSource>(
+    () => AttendanceRemoteDataSourceImpl(getIt<ApiClient>().dio),
+  );
+  getIt.registerLazySingleton<AttendanceRepository>(
+    () => AttendanceRepositoryImpl(getIt()),
+  );
+  getIt.registerLazySingleton(() => GetCurrentShiftUseCase(getIt()));
+  getIt.registerLazySingleton(() => CheckInUseCase(getIt()));
+  getIt.registerLazySingleton(() => CheckOutUseCase(getIt()));
+  getIt.registerFactory<AttendanceBloc>(
+    () => AttendanceBloc(
+      getCurrentShift: getIt(),
+      checkIn: getIt(),
+      checkOut: getIt(),
+    ),
+  );
+
+  // Leave
+  getIt.registerLazySingleton<LeaveRemoteDataSource>(
+    () => LeaveRemoteDataSourceImpl(getIt<ApiClient>().dio),
+  );
+  getIt.registerLazySingleton<LeaveRepository>(
+    () => LeaveRepositoryImpl(getIt()),
+  );
+  getIt.registerLazySingleton(() => SubmitLeaveUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetMyLeavesUseCase(getIt()));
+  getIt.registerFactory<LeaveBloc>(
+    () => LeaveBloc(submitLeave: getIt(), getMyLeaves: getIt()),
+  );
+
+  // Reports
+  getIt.registerLazySingleton<ReportRemoteDataSource>(
+    () => ReportRemoteDataSourceImpl(getIt<ApiClient>().dio),
+  );
+  getIt.registerLazySingleton<ReportRepository>(
+    () => ReportRepositoryImpl(getIt()),
+  );
+  getIt.registerFactory<ReportsBloc>(() => ReportsBloc(getIt()));
 }
