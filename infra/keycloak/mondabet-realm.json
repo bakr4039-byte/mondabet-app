@@ -137,6 +137,22 @@
       }
     ]
   },
+  "users": [
+    {
+      "username": "SA",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "sa@mondabet.sa",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "asdd",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["SuperAdmin"]
+    }
+  ],
   "smtpServer": {},
   "eventsEnabled": true,
   "eventsExpiration": 86400,
