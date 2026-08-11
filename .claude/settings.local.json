@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git init:*)",
+      "Bash(dotnet build:*)",
+      "Bash(dotnet sln:*)",
+      "Bash(dotnet test:*)",
+      "Bash(gh pr:*)",
+      "Bash(where gh:*)",
+      "Bash(winget list:*)",
+      "Bash(find d:/DevProjects/Modabet/Mondabet-Code -name pubspec.yaml -o -name *.dart)",
+      "Bash(find d:/DevProjects/Modabet/Mondabet-Code/src -name \"*.csproj\" -type f -exec grep \"PackageReference\" {} +)",
+      "Bash(find d:/DevProjects/Modabet/Mondabet-Code/src/Services -name \"*.Application.csproj\" -type f -exec cat {})",
+      "Bash(docker version:*)",
+      "Bash(docker compose:*)",
+      "Bash(dotnet --version)",
+      "Bash(npm --version)",
+      "Bash(docker info:*)",
+      "Bash(powershell -Command \"Start-Process ''''C:\\\\Program Files\\\\Docker\\\\Docker\\\\Docker Desktop.exe'''' -ErrorAction SilentlyContinue\")",
+      "Bash(dotnet restore:*)",
+      "Bash(powershell -Command \":*)",
+      "Bash(__NEW_LINE_63a85081c4107b06__ python3:*)",
+      "Bash(__NEW_LINE_0ee7f5b996d9af3a__ python3:*)",
+      "Bash(taskkill /PID 33852 /F)",
+      "Bash(powershell -Command \"Stop-Process -Id 33852 -Force -ErrorAction SilentlyContinue; Start-Sleep 2; Write-Host ''done''\")",
+      "Bash(__NEW_LINE_c44b37b122ca2372__ python3:*)"
+    ]
+  }
+}

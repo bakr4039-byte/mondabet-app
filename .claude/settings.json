@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git fetch:*)",
+      "Bash(xargs grep:*)",
+      "Bash(xargs cat:*)",
+      "Bash(xargs ls:*)",
+      "Bash(docker context:*)",
+      "Bash(start \"\" \"C:\\\\Program Files\\\\Docker\\\\Docker\\\\Docker Desktop.exe\")",
+      "Bash(find d:/DevProjects/Modabet/Mondabet-Code/src/Gateway -name *.csproj)",
+      "Bash(curl -s http://localhost:5000/health/live)",
+      "Bash(curl -s http://localhost:5001/health/live)",
+      "Bash(tasklist)",
+      "Bash(start cmd:*)",
+      "Bash(netstat -ano)",
+      "Read(//tmp/**)",
+      "Bash(wmic process:*)",
+      "Read(//d/DevProjects/Modabet/Mondabet-Code/**)",
+      "Bash(sort -t: -k2 -n)",
+      "Bash(curl -s -X POST \"http://localhost:8080/realms/mondabet/protocol/openid-connect/token\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"grant_type=password&client_id=admin-portal&username=SA&password=asdd\")",
+      "Bash(gh auth:*)"
+    ]
+  }
+}
