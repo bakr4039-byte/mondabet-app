@@ -3,6 +3,7 @@ using Mondabet.Employee.Application.DTOs;
 using Mondabet.Employee.Application.Interfaces;
 using Mondabet.Shared.Application;
 using Mondabet.Shared.Domain;
+using Mondabet.Shared.Infrastructure.Audit;
 using EmployeeEntity = Mondabet.Employee.Domain.Entities.Employee;
 
 namespace Mondabet.Employee.Application.Commands.CreateEmployee;
@@ -11,11 +12,19 @@ public class CreateEmployeeCommandHandler : IRequestHandler<CreateEmployeeComman
 {
     private readonly IEmployeeRepository _repo;
     private readonly IUnitOfWork _uow;
+    private readonly IAuditLogger _auditLogger;
+    private readonly ITenantProvider _tenantProvider;
+    private readonly ICurrentUserProvider _currentUser;
 
-    public CreateEmployeeCommandHandler(IEmployeeRepository repo, IUnitOfWork uow)
+    public CreateEmployeeCommandHandler(
+        IEmployeeRepository repo, IUnitOfWork uow,
+        IAuditLogger auditLogger, ITenantProvider tenantProvider, ICurrentUserProvider currentUser)
     {
         _repo = repo;
         _uow = uow;
+        _auditLogger = auditLogger;
+        _tenantProvider = tenantProvider;
+        _currentUser = currentUser;
     }
 
     public async Task<Result<EmployeeDto>> Handle(CreateEmployeeCommand request, CancellationToken ct)
@@ -35,6 +44,15 @@ public class CreateEmployeeCommandHandler : IRequestHandler<CreateEmployeeComman
 
         await _repo.AddAsync(employee, ct);
         await _uow.SaveChangesAsync(ct);
+
+        await _auditLogger.LogAsync(AuditLog.Create(
+            tenantId: _tenantProvider.TenantId?.ToString() ?? string.Empty,
+            userId: _currentUser.UserId?.ToString() ?? string.Empty,
+            action: "Employee.Create",
+            entityType: "Employee",
+            entityId: employee.Id.ToString(),
+            ipAddress: _currentUser.IpAddress), ct);
+
         return ToDto(employee);
     }
 

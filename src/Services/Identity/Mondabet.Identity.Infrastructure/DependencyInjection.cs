@@ -6,6 +6,7 @@ using Mondabet.Identity.Infrastructure.Persistence;
 using Mondabet.Identity.Infrastructure.Repositories;
 using Mondabet.Identity.Infrastructure.Services;
 using Mondabet.Shared.Application;
+using Mondabet.Shared.Infrastructure.Audit;
 
 namespace Mondabet.Identity.Infrastructure;
 
@@ -40,6 +41,10 @@ public static class DependencyInjection
 
         services.AddStackExchangeRedisCache(options =>
             options.Configuration = configuration.GetConnectionString("Redis"));
+
+        // Audit logging (previously defined in Mondabet.Shared but never wired up anywhere) -
+        // every successful login (via UserLoggedInAuditHandler) is now recorded.
+        services.AddAuditLogging(configuration.GetConnectionString("IdentityDb")!);
 
         return services;
     }

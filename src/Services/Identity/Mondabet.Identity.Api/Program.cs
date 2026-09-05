@@ -8,6 +8,7 @@ using Mondabet.Shared.Application.Behaviors;
 using Mondabet.Shared.Infrastructure;
 using System.Security.Cryptography;
 using Mondabet.Identity.Infrastructure.Persistence;
+using Mondabet.Shared.Infrastructure.Audit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -95,6 +96,9 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<IdentityDbContext>();
     await db.Database.EnsureCreatedAsync();
+
+    var auditDb = scope.ServiceProvider.GetRequiredService<AuditDbContext>();
+    await auditDb.EnsureAuditTableCreatedAsync();
 }
 
 app.Run();
