@@ -23,7 +23,9 @@ public record EmployeeDto(
     DateOnly? DrivingLicenseExpiryDate,
     double? PunctualityScore,
     int? ConsecutiveOnTimeDays,
-    string? GamificationBadge);
+    string? GamificationBadge,
+    decimal? BaseSalary,
+    decimal? HourlyRate);
 
 public record EmployeeCreateDto(
     string FullNameAr,
@@ -42,7 +44,9 @@ public record EmployeeCreateDto(
     DateOnly? ContractExpiryDate = null,
     DateOnly? HealthCertExpiryDate = null,
     DateOnly? MedicalInsuranceExpiryDate = null,
-    DateOnly? DrivingLicenseExpiryDate = null);
+    DateOnly? DrivingLicenseExpiryDate = null,
+    decimal? BaseSalary = null,
+    decimal? HourlyRate = null);
 
 public record EmployeeUpdateDto(
     string FullNameAr,
@@ -59,7 +63,9 @@ public record EmployeeUpdateDto(
     DateOnly? ContractExpiryDate = null,
     DateOnly? HealthCertExpiryDate = null,
     DateOnly? MedicalInsuranceExpiryDate = null,
-    DateOnly? DrivingLicenseExpiryDate = null);
+    DateOnly? DrivingLicenseExpiryDate = null,
+    decimal? BaseSalary = null,
+    decimal? HourlyRate = null);
 
 public record ImportResultDto(
     int Imported,

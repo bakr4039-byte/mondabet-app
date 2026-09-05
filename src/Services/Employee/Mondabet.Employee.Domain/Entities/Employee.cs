@@ -36,6 +36,11 @@ public class Employee : BaseEntity
     public int? ConsecutiveOnTimeDays { get; private set; }
     public string? GamificationBadge { get; private set; }
 
+    // Payroll inputs. Both optional: an employee with neither set simply can't be payrolled
+    // yet (the Report service's payroll report skips them rather than guessing a number).
+    public decimal? BaseSalary { get; private set; }
+    public decimal? HourlyRate { get; private set; }
+
     protected Employee() { }
 
     public static Employee Create(
@@ -56,7 +61,9 @@ public class Employee : BaseEntity
         DateOnly? contractExpiryDate = null,
         DateOnly? healthCertExpiryDate = null,
         DateOnly? medicalInsuranceExpiryDate = null,
-        DateOnly? drivingLicenseExpiryDate = null)
+        DateOnly? drivingLicenseExpiryDate = null,
+        decimal? baseSalary = null,
+        decimal? hourlyRate = null)
         => new()
         {
             Id = Guid.NewGuid(),
@@ -78,6 +85,8 @@ public class Employee : BaseEntity
             HealthCertExpiryDate = healthCertExpiryDate,
             MedicalInsuranceExpiryDate = medicalInsuranceExpiryDate,
             DrivingLicenseExpiryDate = drivingLicenseExpiryDate,
+            BaseSalary = baseSalary,
+            HourlyRate = hourlyRate,
         };
 
     public void Update(
@@ -95,7 +104,9 @@ public class Employee : BaseEntity
         DateOnly? contractExpiryDate = null,
         DateOnly? healthCertExpiryDate = null,
         DateOnly? medicalInsuranceExpiryDate = null,
-        DateOnly? drivingLicenseExpiryDate = null)
+        DateOnly? drivingLicenseExpiryDate = null,
+        decimal? baseSalary = null,
+        decimal? hourlyRate = null)
     {
         FullNameAr = fullNameAr;
         FullNameEn = fullNameEn;
@@ -112,6 +123,8 @@ public class Employee : BaseEntity
         HealthCertExpiryDate = healthCertExpiryDate;
         MedicalInsuranceExpiryDate = medicalInsuranceExpiryDate;
         DrivingLicenseExpiryDate = drivingLicenseExpiryDate;
+        BaseSalary = baseSalary;
+        HourlyRate = hourlyRate;
     }
 
     public void Activate() => IsActive = true;

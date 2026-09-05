@@ -30,7 +30,8 @@ public class CreateEmployeeCommandHandler : IRequestHandler<CreateEmployeeComman
             d.JobTitle, d.MobileNumber, d.Email, d.DepartmentId, d.ShiftId,
             d.EmployeeNumber, d.FingerprintId, d.PinCode,
             d.IqamaExpiryDate, d.ContractExpiryDate, d.HealthCertExpiryDate,
-            d.MedicalInsuranceExpiryDate, d.DrivingLicenseExpiryDate);
+            d.MedicalInsuranceExpiryDate, d.DrivingLicenseExpiryDate,
+            d.BaseSalary, d.HourlyRate);
 
         await _repo.AddAsync(employee, ct);
         await _uow.SaveChangesAsync(ct);
@@ -44,5 +45,6 @@ public class CreateEmployeeCommandHandler : IRequestHandler<CreateEmployeeComman
         e.EmployeeNumber, e.FingerprintId, e.PinCode,
         e.IqamaExpiryDate, e.ContractExpiryDate, e.HealthCertExpiryDate,
         e.MedicalInsuranceExpiryDate, e.DrivingLicenseExpiryDate,
-        e.PunctualityScore, e.ConsecutiveOnTimeDays, e.GamificationBadge);
+        e.PunctualityScore, e.ConsecutiveOnTimeDays, e.GamificationBadge,
+        e.BaseSalary, e.HourlyRate);
 }

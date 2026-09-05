@@ -1,4 +1,5 @@
 using ClosedXML.Excel;
+using Mondabet.Report.Application.DTOs;
 using Mondabet.Report.Application.Interfaces;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
@@ -188,6 +189,121 @@ public class ReportGenerator : IReportGenerator
             ws.Cell(rowIdx, 2).Value = r.CompanyName;
             ws.Cell(rowIdx, 3).Value = r.EmployeeCount;
             ws.Cell(rowIdx, 4).Value = r.LastActivity?.ToString("dd/MM/yyyy") ?? "";
+            rowIdx++;
+        }
+
+        ws.Columns().AdjustToContents();
+
+        using var ms = new MemoryStream();
+        wb.SaveAs(ms);
+        return ms.ToArray();
+    }
+
+    // ──────────────────────────────────────────────────────────
+    // Payroll PDF
+    // ──────────────────────────────────────────────────────────
+    public byte[] GeneratePayrollPdf(IReadOnlyList<PayrollSummaryDto> rows, int year, int month)
+    {
+        return Document.Create(container =>
+        {
+            container.Page(page =>
+            {
+                page.Size(PageSizes.A4.Landscape());
+                page.Margin(1, Unit.Centimetre);
+                page.Header().Text($"Payroll Report: {year:0000}-{month:00}").FontSize(14).Bold();
+
+                page.Content().Table(table =>
+                {
+                    table.ColumnsDefinition(cols =>
+                    {
+                        cols.RelativeColumn(3); // Employee
+                        cols.RelativeColumn(2); // Department
+                        cols.RelativeColumn(2); // Base salary
+                        cols.RelativeColumn(1); // Present
+                        cols.RelativeColumn(1); // Late
+                        cols.RelativeColumn(2); // Overtime pay
+                        cols.RelativeColumn(2); // Late deduction
+                        cols.RelativeColumn(2); // Net
+                    });
+
+                    static IContainer H(IContainer c) =>
+                        c.Background(Colors.Grey.Lighten2).Padding(5);
+
+                    table.Header(header =>
+                    {
+                        header.Cell().Element(H).Text("Employee");
+                        header.Cell().Element(H).Text("Department");
+                        header.Cell().Element(H).Text("Base Salary");
+                        header.Cell().Element(H).Text("Present");
+                        header.Cell().Element(H).Text("Late");
+                        header.Cell().Element(H).Text("Overtime Pay");
+                        header.Cell().Element(H).Text("Late Deduction");
+                        header.Cell().Element(H).Text("Net Payable");
+                    });
+
+                    foreach (var r in rows)
+                    {
+                        table.Cell().Padding(4).Text(r.EmployeeName);
+                        table.Cell().Padding(4).Text(r.DepartmentName);
+                        table.Cell().Padding(4).Text($"{r.BaseSalary:N2} {r.Currency}");
+                        table.Cell().Padding(4).Text($"{r.PresentDays}/{r.WorkingDays}");
+                        table.Cell().Padding(4).Text(r.LateDays.ToString());
+                        table.Cell().Padding(4).Text($"{r.OvertimePay:N2}");
+                        table.Cell().Padding(4).Text($"{r.LateDeduction:N2}");
+                        table.Cell().Padding(4).Text($"{r.NetPayableSalary:N2} {r.Currency}");
+                    }
+                });
+
+                page.Footer().AlignCenter()
+                    .Text(x =>
+                    {
+                        x.Span("Page ");
+                        x.CurrentPageNumber();
+                        x.Span(" of ");
+                        x.TotalPages();
+                    });
+            });
+        }).GeneratePdf();
+    }
+
+    // ──────────────────────────────────────────────────────────
+    // Payroll Excel
+    // ──────────────────────────────────────────────────────────
+    public byte[] GeneratePayrollExcel(IReadOnlyList<PayrollSummaryDto> rows, int year, int month)
+    {
+        using var wb = new XLWorkbook();
+        var ws = wb.Worksheets.Add($"Payroll {year:0000}-{month:00}");
+
+        string[] headers =
+        {
+            "Employee", "Employee (AR)", "Employee #", "Department", "Base Salary",
+            "Working Days", "Present Days", "Late Days", "Late Minutes",
+            "Work Hours", "Overtime Hours", "Overtime Pay", "Late Deduction",
+            "Net Payable", "Currency",
+        };
+        for (var i = 0; i < headers.Length; i++) ws.Cell(1, i + 1).Value = headers[i];
+
+        ws.Row(1).Style.Font.Bold = true;
+        ws.Row(1).Style.Fill.BackgroundColor = XLColor.LightGray;
+
+        var rowIdx = 2;
+        foreach (var r in rows)
+        {
+            ws.Cell(rowIdx, 1).Value = r.EmployeeName;
+            ws.Cell(rowIdx, 2).Value = r.EmployeeNameAr;
+            ws.Cell(rowIdx, 3).Value = r.EmployeeNumber ?? "";
+            ws.Cell(rowIdx, 4).Value = r.DepartmentName;
+            ws.Cell(rowIdx, 5).Value = r.BaseSalary;
+            ws.Cell(rowIdx, 6).Value = r.WorkingDays;
+            ws.Cell(rowIdx, 7).Value = r.PresentDays;
+            ws.Cell(rowIdx, 8).Value = r.LateDays;
+            ws.Cell(rowIdx, 9).Value = r.TotalLateMinutes;
+            ws.Cell(rowIdx, 10).Value = r.TotalWorkHours;
+            ws.Cell(rowIdx, 11).Value = r.TotalOvertimeHours;
+            ws.Cell(rowIdx, 12).Value = r.OvertimePay;
+            ws.Cell(rowIdx, 13).Value = r.LateDeduction;
+            ws.Cell(rowIdx, 14).Value = r.NetPayableSalary;
+            ws.Cell(rowIdx, 15).Value = r.Currency;
             rowIdx++;
         }
 
