@@ -43,7 +43,7 @@ builder.Services.AddAuthorization(options =>
         policy.RequireRole("SuperAdmin"));
 });
 
-builder.Services.AddReportInfrastructure();
+builder.Services.AddReportInfrastructure(builder.Configuration);
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(AttendanceReportQueryHandler).Assembly));
 

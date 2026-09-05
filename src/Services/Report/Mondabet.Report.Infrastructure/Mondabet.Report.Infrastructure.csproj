@@ -3,6 +3,11 @@
     <TargetFramework>net9.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <!-- Needed explicitly (not just transitively via Mondabet.Shared) for IHttpContextAccessor
+         and IHttpClientFactory/AddHttpClient, used by AttendanceDataService's cross-service calls. -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Mondabet.Report.Application\Mondabet.Report.Application.csproj" />
   </ItemGroup>
   <ItemGroup>
