@@ -5,6 +5,7 @@ using Mondabet.Leave.Infrastructure;
 using Mondabet.Shared.Application;
 using Mondabet.Shared.Infrastructure;
 using Mondabet.Leave.Infrastructure.Persistence;
+using Mondabet.Shared.Infrastructure.Audit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,6 +74,9 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<LeaveDbContext>();
     await db.Database.EnsureCreatedAsync();
+
+    var auditDb = scope.ServiceProvider.GetRequiredService<AuditDbContext>();
+    await auditDb.EnsureAuditTableCreatedAsync();
 }
 
 app.Run();
