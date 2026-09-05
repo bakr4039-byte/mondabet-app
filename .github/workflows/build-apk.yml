@@ -1,0 +1,65 @@
+name: Build mobile APK
+
+# Builds the Flutter employee app into an installable Android APK on GitHub's own
+# runners, which have full internet access - unlike the sandboxed environment this
+# repo is normally developed in, which cannot reach pub.dev/Google's Maven repo/the
+# Android SDK at all. This workflow is additive: it doesn't touch any existing code,
+# it just gives the project a place where "flutter build apk" can actually run.
+#
+# The mobile/ project has no committed android/ folder yet, so this workflow
+# generates it fresh on every run with `flutter create --platforms=android .`
+# rather than requiring one to be committed - that keeps the repo Android/iOS-free
+# until someone deliberately wants to customize native project files.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "mobile/**"
+      - ".github/workflows/build-apk.yml"
+  workflow_dispatch: {}
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Scaffold Android platform (mobile/android/ isn't committed yet)
+        run: |
+          if [ ! -d android ]; then
+            flutter create --platforms=android --org com.mondabet --project-name mondabet .
+          fi
+
+      # Optional: only present once the user adds a GOOGLE_SERVICES_JSON repo secret
+      # (base64-encoded contents of their Firebase Android app's google-services.json).
+      # Without it, Firebase/FCM push notifications just stay inactive - main.dart's
+      # Firebase.initializeApp() call is wrapped in a try/catch for exactly this case,
+      # so the build and the app itself both still work, just without push notifications.
+      - name: Inject Firebase config if provided
+        if: ${{ secrets.GOOGLE_SERVICES_JSON != '' }}
+        run: echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 -d > android/app/google-services.json
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build release APK
+        run: flutter build apk --release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mondabet-app-release-apk
+          path: mobile/build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
