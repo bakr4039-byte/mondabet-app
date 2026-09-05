@@ -5,6 +5,7 @@ using Mondabet.Attendance.Application.Commands.CreateShift;
 using Mondabet.Attendance.Application.Commands.UpdateShift;
 using Mondabet.Attendance.Application.DTOs;
 using Mondabet.Attendance.Application.Queries.GetAttendanceSummary;
+using Mondabet.Attendance.Application.Queries.GetCurrentShift;
 using Mondabet.Attendance.Application.Queries.ListCheckIns;
 using Mondabet.Attendance.Application.Queries.ListShifts;
 
@@ -37,6 +38,19 @@ public static class AttendanceEndpoints
             var result = await m.Send(new UpdateShiftCommand(id, dto), ct);
             return result.IsSuccess ? Results.Ok(result.Value) : Results.NotFound(result.Error);
         });
+
+        // Self-scoped: any authenticated employee (not just CompanyAdmin) resolving their own
+        // assigned shift for the mobile check-in screen. Mapped outside the "shifts" group
+        // (which requires CompanyAdmin) so a plain Employee token can call it.
+        app.MapGet("/api/v1/shifts/current", async (
+            IMediator m, HttpContext ctx, CancellationToken ct) =>
+        {
+            var employeeId = GetEmployeeId(ctx);
+            if (employeeId == Guid.Empty) return Results.Unauthorized();
+
+            var result = await m.Send(new GetCurrentShiftQuery(employeeId), ct);
+            return result.IsSuccess ? Results.Ok(result.Value) : Results.NotFound(result.Error);
+        }).RequireAuthorization();
 
         // --- Check-ins ---
         checkins.MapPost("/", async (
@@ -72,6 +86,22 @@ public static class AttendanceEndpoints
                 ct);
             return result.IsSuccess ? Results.Ok(result.Value) : Results.BadRequest(result.Error);
         }).RequireAuthorization("CompanyAdmin");
+
+        // Self-scoped: the caller's own attendance history for the mobile app - reuses the same
+        // paged query as the CompanyAdmin list above, but forces EmployeeId to the caller so no
+        // elevated role is required. Inherits the "checkins" group's bare RequireAuthorization().
+        checkins.MapGet("/my", async (
+            DateTime? from, DateTime? to, int page, int size,
+            IMediator m, HttpContext ctx, CancellationToken ct) =>
+        {
+            var employeeId = GetEmployeeId(ctx);
+            if (employeeId == Guid.Empty) return Results.Unauthorized();
+
+            var result = await m.Send(
+                new ListCheckInsQuery(employeeId, from, to, page == 0 ? 1 : page, size == 0 ? 20 : size),
+                ct);
+            return result.IsSuccess ? Results.Ok(result.Value) : Results.BadRequest(result.Error);
+        });
 
         // Attendance summary per employee
         app.MapGet("/api/v1/attendance/employee/{id:guid}", async (

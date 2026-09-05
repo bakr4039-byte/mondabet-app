@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Mondabet.Attendance.Application.Interfaces;
 using Mondabet.Attendance.Infrastructure.Persistence;
 using Mondabet.Attendance.Infrastructure.Repositories;
+using Mondabet.Attendance.Infrastructure.Services;
 using Mondabet.Shared.Application;
 using Mondabet.Shared.Infrastructure;
 
@@ -20,6 +21,13 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<AttendanceDbContext>());
         services.AddScoped<IShiftRepository, ShiftRepository>();
         services.AddScoped<IAttendanceRepository, AttendanceRepository>();
+
+        services.AddHttpContextAccessor();
+        services.AddHttpClient("EmployeeApi", client =>
+        {
+            client.BaseAddress = new Uri(configuration["Services:EmployeeBaseUrl"]!);
+        });
+        services.AddScoped<IEmployeeLookupService, EmployeeLookupService>();
 
         return services;
     }

@@ -3,6 +3,12 @@
     <TargetFramework>net9.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <!-- Needed explicitly (not just transitively via Mondabet.Shared) for IHttpContextAccessor
+         and IHttpClientFactory/AddHttpClient, used by EmployeeLookupService's cross-service call
+         to resolve GET /api/v1/shifts/current - same reason Report.Infrastructure needs it. -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Mondabet.Attendance.Application\Mondabet.Attendance.Application.csproj" />
   </ItemGroup>
   <ItemGroup>
