@@ -54,6 +54,34 @@ jobs:
             flutter create --platforms=android --org com.mondabet --project-name mondabet .
           fi
 
+      # geolocator_android (pulled in by geolocator ^13.0.1) keeps getting updated for new
+      # Android APIs independently of any Flutter version, and its build.gradle expects a
+      # compileSdkVersion to already be set on it - something the *older* Flutter 3.24.5
+      # project template (pinned above, needed for the pub dependency conflict) never
+      # configures for plugin subprojects. That combination is what produced "Cannot invoke
+      # method substring() on null object / compileSdkVersion is not specified" for
+      # :geolocator_android specifically. Rather than touch pubspec.yaml (downgrading
+      # geolocator risks losing GPS/geofencing behavior this app depends on), this patches
+      # the freshly generated android/build.gradle to set compileSdkVersion 34 on any plugin
+      # subproject that doesn't already declare one - it only fills in what's genuinely
+      # missing, so a plugin that already sets its own (possibly higher) value is untouched.
+      - name: Ensure plugin subprojects have a compileSdkVersion
+        run: |
+          cat >> android/build.gradle <<'EOF'
+
+subprojects { subproject ->
+    afterEvaluate {
+        if (subproject.hasProperty('android')) {
+            try {
+                if (subproject.android.compileSdkVersion == null) {
+                    subproject.android.compileSdkVersion = 34
+                }
+            } catch (ignored) {}
+        }
+    }
+}
+EOF
+
       # Optional: only present once the user adds a GOOGLE_SERVICES_JSON repo secret
       # (base64-encoded contents of their Firebase Android app's google-services.json).
       # Without it, Firebase/FCM push notifications just stay inactive - main.dart's
