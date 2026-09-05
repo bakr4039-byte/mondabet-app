@@ -1,12 +1,15 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 
+import '../../features/attendance/data/datasources/attendance_local_datasource.dart';
 import '../../features/attendance/data/datasources/attendance_remote_datasource.dart';
 import '../../features/attendance/data/repositories/attendance_repository_impl.dart';
 import '../../features/attendance/domain/repositories/attendance_repository.dart';
 import '../../features/attendance/domain/usecases/check_in_usecase.dart';
 import '../../features/attendance/domain/usecases/check_out_usecase.dart';
 import '../../features/attendance/domain/usecases/get_current_shift_usecase.dart';
+import '../../features/attendance/domain/usecases/get_pending_attendance_count_usecase.dart';
+import '../../features/attendance/domain/usecases/sync_pending_attendance_usecase.dart';
 import '../../features/attendance/presentation/bloc/attendance_bloc.dart';
 import '../../features/auth/data/datasources/auth_remote_datasource.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
@@ -28,6 +31,7 @@ import '../../features/reports/data/repositories/report_repository_impl.dart';
 import '../../features/reports/domain/repositories/report_repository.dart';
 import '../../features/reports/presentation/bloc/reports_bloc.dart';
 import '../network/api_client.dart';
+import '../network/connectivity_service.dart';
 import '../services/fcm_service.dart';
 
 final getIt = GetIt.instance;
@@ -41,6 +45,7 @@ void configureDependencies() {
   );
   getIt.registerSingleton<ApiClient>(ApiClient(getIt()));
   getIt.registerSingleton<FcmService>(FcmService());
+  getIt.registerSingleton<ConnectivityService>(ConnectivityService());
 
   // Auth
   getIt.registerLazySingleton<AuthRemoteDataSource>(
@@ -69,17 +74,25 @@ void configureDependencies() {
   getIt.registerLazySingleton<AttendanceRemoteDataSource>(
     () => AttendanceRemoteDataSourceImpl(getIt<ApiClient>().dio),
   );
+  getIt.registerLazySingleton<AttendanceLocalDataSource>(
+    () => AttendanceLocalDataSourceImpl(),
+  );
   getIt.registerLazySingleton<AttendanceRepository>(
-    () => AttendanceRepositoryImpl(getIt()),
+    () => AttendanceRepositoryImpl(getIt(), getIt(), getIt()),
   );
   getIt.registerLazySingleton(() => GetCurrentShiftUseCase(getIt()));
   getIt.registerLazySingleton(() => CheckInUseCase(getIt()));
   getIt.registerLazySingleton(() => CheckOutUseCase(getIt()));
+  getIt.registerLazySingleton(() => SyncPendingAttendanceUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetPendingAttendanceCountUseCase(getIt()));
   getIt.registerFactory<AttendanceBloc>(
     () => AttendanceBloc(
       getCurrentShift: getIt(),
       checkIn: getIt(),
       checkOut: getIt(),
+      syncPending: getIt(),
+      getPendingCount: getIt(),
+      connectivityService: getIt(),
     ),
   );
 

@@ -25,12 +25,17 @@ class AttendanceLoaded extends AttendanceState {
   final double? currentLng;
   final double? distanceToShift;
 
+  /// Check-in/check-out actions still queued locally, waiting for connectivity
+  /// to come back (see AttendanceRepositoryImpl.syncPendingActions).
+  final int pendingCount;
+
   const AttendanceLoaded({
     this.shift,
     this.openRecord,
     this.currentLat,
     this.currentLng,
     this.distanceToShift,
+    this.pendingCount = 0,
   });
 
   bool get isWithinGeofence =>
@@ -39,7 +44,8 @@ class AttendanceLoaded extends AttendanceState {
           : distanceToShift! <= shift!.radiusMeters;
 
   @override
-  List<Object?> get props => [shift, openRecord, currentLat, currentLng, distanceToShift];
+  List<Object?> get props =>
+      [shift, openRecord, currentLat, currentLng, distanceToShift, pendingCount];
 }
 
 class AttendanceCheckedIn extends AttendanceState {

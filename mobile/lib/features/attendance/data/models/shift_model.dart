@@ -26,4 +26,17 @@ class ShiftModel extends Shift {
           jsonDecode(json['daysOfWeekJson'] as String? ?? '[]') as List,
         ),
       );
+
+  /// Round-trips through the same shape fromJson expects - used only to cache
+  /// the shift locally (Hive) for offline use, never sent back to the server.
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'startTime': startTime,
+        'endTime': endTime,
+        'latitude': latitude,
+        'longitude': longitude,
+        'radiusMeters': radiusMeters,
+        'daysOfWeekJson': jsonEncode(daysOfWeek),
+      };
 }

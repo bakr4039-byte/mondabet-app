@@ -8,6 +8,10 @@ class AttendanceRecord {
   final double checkInLng;
   final bool isWithinGeofence;
 
+  /// True for a record created locally while offline (queued in Hive, not yet
+  /// confirmed by the server). Cleared once the offline sync flushes it.
+  final bool pendingSync;
+
   const AttendanceRecord({
     required this.id,
     required this.employeeId,
@@ -17,6 +21,7 @@ class AttendanceRecord {
     required this.checkInLat,
     required this.checkInLng,
     required this.isWithinGeofence,
+    this.pendingSync = false,
   });
 
   bool get isOpen => checkOutTime == null;

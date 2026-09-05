@@ -10,6 +10,7 @@ class AttendanceModel extends AttendanceRecord {
     required super.checkInLat,
     required super.checkInLng,
     required super.isWithinGeofence,
+    super.pendingSync,
   });
 
   factory AttendanceModel.fromJson(Map<String, dynamic> json) => AttendanceModel(
@@ -23,5 +24,8 @@ class AttendanceModel extends AttendanceRecord {
         checkInLat: (json['checkInLat'] as num).toDouble(),
         checkInLng: (json['checkInLng'] as num).toDouble(),
         isWithinGeofence: json['isWithinGeofence'] as bool,
+        // The backend never sends this field - it only exists for records
+        // synthesized locally while offline (see AttendanceRepositoryImpl).
+        pendingSync: json['pendingSync'] as bool? ?? false,
       );
 }

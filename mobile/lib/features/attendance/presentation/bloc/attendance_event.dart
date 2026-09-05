@@ -30,3 +30,10 @@ class LocationRefreshed extends AttendanceEvent {
   @override
   List<Object?> get props => [lat, lng];
 }
+
+/// Fired on app start, after every check-in/check-out, and automatically
+/// whenever connectivity comes back - attempts to flush any actions queued
+/// while offline.
+class SyncRequested extends AttendanceEvent {
+  const SyncRequested();
+}
