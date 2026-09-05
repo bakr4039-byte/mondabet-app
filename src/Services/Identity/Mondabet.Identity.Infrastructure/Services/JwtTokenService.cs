@@ -22,7 +22,18 @@ public class JwtTokenService : IJwtTokenService
         using var rsa = RSA.Create();
         rsa.ImportFromPem(privateKeyPem);
 
-        var key = new RsaSecurityKey(rsa);
+        // A fresh RSA instance is imported from the same PEM on every call, and it's disposed
+        // (via the `using` above) as soon as this method returns. Microsoft.IdentityModel.Tokens
+        // caches SignatureProviders by default (CryptoProviderFactory.CacheSignatureProviders =
+        // true), keyed off the key material - so the SECOND call onward reuses a cached provider
+        // that's still holding a reference to the FIRST call's already-disposed RSA instance,
+        // which blows up with "ObjectDisposedException: ... 'RSABCrypt'" deep inside token
+        // signing. Disable caching for this key so every call gets its own provider bound to its
+        // own (still-alive) rsa instance.
+        var key = new RsaSecurityKey(rsa)
+        {
+            CryptoProviderFactory = new CryptoProviderFactory { CacheSignatureProviders = false }
+        };
         var credentials = new SigningCredentials(key, SecurityAlgorithms.RsaSha256);
 
         var claims = new List<Claim>
