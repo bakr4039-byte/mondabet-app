@@ -1,10 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'core/di/injection.dart';
 import 'core/router/app_router.dart';
+import 'core/services/fcm_service.dart';
 import 'core/theme/tenant_config.dart';
 import 'core/theme/theme_service.dart';
 import 'features/attendance/presentation/bloc/attendance_bloc.dart';
@@ -19,7 +22,18 @@ void main() async {
   await EasyLocalization.ensureInitialized();
   configureDependencies();
 
-  await getIt<FcmService>().initialize();
+  // Firebase/FCM need a real Firebase project registered (google-services.json on
+  // Android, GoogleService-Info.plist on iOS) before this succeeds - this was
+  // previously never called at all, even though FcmService assumed it had been,
+  // so push notifications silently could never have worked. Guarded so a build
+  // without Firebase configured yet still launches normally, just without push
+  // notifications, instead of crashing on startup.
+  try {
+    await Firebase.initializeApp();
+    await getIt<FcmService>().initialize();
+  } catch (e) {
+    debugPrint('Firebase/FCM initialization skipped (not configured yet): $e');
+  }
 
   runApp(
     EasyLocalization(
