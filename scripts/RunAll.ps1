@@ -17,8 +17,14 @@ function Start-DotnetService {
     $out = Join-Path $logDir "$Name.out.log"
     $err = Join-Path $logDir "$Name.err.log"
     Write-Host "Starting $Name on port $Port..."
+    # --no-build: the solution was already built once, up front (see below). Without this,
+    # launching all 9 services within a few seconds of each other makes every one of them try
+    # to rebuild the shared Mondabet.Shared project at the same time, and they race on the same
+    # obj\Debug\net9.0\Mondabet.Shared.dll file - whichever loses gets
+    # "CSC : error CS2012: Cannot open ... for writing" and never starts. Skipping the
+    # per-service build entirely avoids that race (and starts up much faster).
     Start-Process -FilePath "dotnet" `
-        -ArgumentList "run --project `"$ProjectPath`" --urls http://localhost:$Port" `
+        -ArgumentList "run --no-build --project `"$ProjectPath`" --urls http://localhost:$Port" `
         -WorkingDirectory $root `
         -WindowStyle Hidden `
         -RedirectStandardOutput $out `
@@ -64,27 +70,41 @@ docker compose up -d sqlserver redis keycloak
 Write-Host "Waiting ~90s for Keycloak to finish importing the realm..."
 Start-Sleep -Seconds 90
 
-# 3) Core .NET services
-Start-DotnetService -Name "Identity" -ProjectPath "src\Services\Identity\Mondabet.Identity.Api" -Port 5001
-Start-Sleep -Seconds 5
-Start-DotnetService -Name "Gateway"  -ProjectPath "src\Gateway\Mondabet.Gateway" -Port 5000
-Start-Sleep -Seconds 5
-Start-DotnetService -Name "Tenant"   -ProjectPath "src\Services\Tenant\Mondabet.Tenant.Api" -Port 5002
-Start-Sleep -Seconds 5
+# 3) Build the whole solution ONCE, up front. This is what lets every service below start
+# with --no-build instead of racing each other to rebuild the shared project (see the note
+# in Start-DotnetService). If this fails, stop here rather than launching 9 services against
+# a broken build.
+Write-Host "Building the solution once (avoids per-service build races)..."
+$buildLog = Join-Path $logDir "PreBuild.log"
+dotnet build "$root\Mondabet.sln" -c Debug --nologo *> $buildLog
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "BUILD FAILED - see $buildLog for details. Not starting any services."
+    Start-Sleep -Seconds 10
+    exit 1
+}
+Write-Host "Build OK."
 
-# 4) Remaining backend services
+# 4) Core .NET services
+Start-DotnetService -Name "Identity" -ProjectPath "src\Services\Identity\Mondabet.Identity.Api" -Port 5001
+Start-Sleep -Seconds 2
+Start-DotnetService -Name "Gateway"  -ProjectPath "src\Gateway\Mondabet.Gateway" -Port 5000
+Start-Sleep -Seconds 2
+Start-DotnetService -Name "Tenant"   -ProjectPath "src\Services\Tenant\Mondabet.Tenant.Api" -Port 5002
+Start-Sleep -Seconds 2
+
+# 5) Remaining backend services
 Start-DotnetService -Name "Employee"      -ProjectPath "src\Services\Employee\Mondabet.Employee.Api" -Port 5003
-Start-Sleep -Seconds 4
+Start-Sleep -Seconds 2
 Start-DotnetService -Name "Attendance"    -ProjectPath "src\Services\Attendance\Mondabet.Attendance.Api" -Port 5004
-Start-Sleep -Seconds 4
+Start-Sleep -Seconds 2
 Start-DotnetService -Name "Leave"         -ProjectPath "src\Services\Leave\Mondabet.Leave.Api" -Port 5005
-Start-Sleep -Seconds 4
+Start-Sleep -Seconds 2
 Start-DotnetService -Name "Workflow"      -ProjectPath "src\Services\Workflow\Mondabet.Workflow.Api" -Port 5006
-Start-Sleep -Seconds 4
+Start-Sleep -Seconds 2
 Start-DotnetService -Name "Notification"  -ProjectPath "src\Services\Notification\Mondabet.Notification.Api" -Port 5007
-Start-Sleep -Seconds 4
+Start-Sleep -Seconds 2
 Start-DotnetService -Name "Report"        -ProjectPath "src\Services\Report\Mondabet.Report.Api" -Port 5008
-Start-Sleep -Seconds 4
+Start-Sleep -Seconds 2
 Start-DotnetService -Name "Clarification" -ProjectPath "src\Services\Clarification\Mondabet.Clarification.Api" -Port 5009
 
 Start-Sleep -Seconds 10
