@@ -1,0 +1,128 @@
+E:\psma\Mondabet-Code\src\Shared\Mondabet.Shared\Mondabet.Shared.csproj : warning NU1902: Package 'OpenTelemetry.Exporter.OpenTelemetryProtocol' 1.9.0 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-4625-4j76-fww9 [E:\psma\Mondabet-Code\src\Services\Identity\Mondabet.Identity.Api\Mondabet.Identity.Api.csproj]
+E:\psma\Mondabet-Code\src\Shared\Mondabet.Shared\Mondabet.Shared.csproj : warning NU1902: Package 'OpenTelemetry.Exporter.OpenTelemetryProtocol' 1.9.0 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-4625-4j76-fww9
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (772ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (531ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      
+      IF EXISTS
+          (SELECT *
+           FROM [sys].[objects] o
+           WHERE [o].[type] = 'U'
+           AND [o].[is_ms_shipped] = 0
+           AND NOT EXISTS (SELECT *
+               FROM [sys].[extended_properties] AS [ep]
+               WHERE [ep].[major_id] = [o].[object_id]
+                   AND [ep].[minor_id] = 0
+                   AND [ep].[class] = 1
+                   AND [ep].[name] = N'microsoft_database_tools_support'
+          )
+      )
+      SELECT 1 ELSE SELECT 0
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5001
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: E:\psma\Mondabet-Code\src\Services\Identity\Mondabet.Identity.Api
+info: System.Net.Http.HttpClient.IKeycloakService.LogicalHandler[100]
+      Start processing HTTP request POST http://localhost:8180/realms/mondabet/protocol/openid-connect/token
+info: System.Net.Http.HttpClient.IKeycloakService.ClientHandler[100]
+      Sending HTTP request POST http://localhost:8180/realms/mondabet/protocol/openid-connect/token
+fail: Mondabet.Identity.Infrastructure.Services.KeycloakService[0]
+      Keycloak credential validation failed for sa@mondabet.sa
+      System.Threading.Tasks.TaskCanceledException: The operation was canceled.
+       ---> System.Threading.Tasks.TaskCanceledException: The operation was canceled.
+       ---> System.IO.IOException: Unable to read data from the transport connection: The I/O operation has been aborted because of either a thread exit or an application request..
+       ---> System.Net.Sockets.SocketException (995): The I/O operation has been aborted because of either a thread exit or an application request.
+         --- End of inner exception stack trace ---
+         at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+         at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource<System.Int32>.GetResult(Int16 token)
+         at System.Net.Http.HttpConnection.InitialFillAsync(Boolean async)
+         at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+         --- End of inner exception stack trace ---
+         at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+         at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+         at System.Net.Http.DiagnosticsHandler.SendAsyncCore(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+         at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+         at System.Net.Http.SocketsHttpHandler.<SendAsync>g__CreateHandlerAndSendAsync|115_0(HttpRequestMessage request, CancellationToken cancellationToken)
+         at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+         at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+         at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+         --- End of inner exception stack trace ---
+         at System.Net.Http.HttpClient.HandleFailure(Exception e, Boolean telemetryStarted, HttpResponseMessage response, CancellationTokenSource cts, CancellationToken cancellationToken, CancellationTokenSource pendingRequestsCts)
+         at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+         at Mondabet.Identity.Infrastructure.Services.KeycloakService.ValidateCredentialsAsync(String identifier, String password, CancellationToken ct) in E:\psma\Mondabet-Code\src\Services\Identity\Mondabet.Identity.Infrastructure\Services\KeycloakService.cs:line 40
+info: System.Net.Http.HttpClient.IKeycloakService.LogicalHandler[100]
+      Start processing HTTP request POST http://localhost:8180/realms/mondabet/protocol/openid-connect/token
+info: System.Net.Http.HttpClient.IKeycloakService.ClientHandler[100]
+      Sending HTTP request POST http://localhost:8180/realms/mondabet/protocol/openid-connect/token
+info: System.Net.Http.HttpClient.IKeycloakService.ClientHandler[101]
+      Received HTTP response headers after 3152.7267ms - 200
+info: System.Net.Http.HttpClient.IKeycloakService.LogicalHandler[101]
+      End processing HTTP request after 3166.2178ms - 200
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (302ms) [Parameters=[@__ToLowerInvariant_0='?' (Size = 200)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [u].[Id], [u].[CreatedAt], [u].[CreatedBy], [u].[Email], [u].[IsActive], [u].[IsDeleted], [u].[MobileNumber], [u].[RoleId], [u].[TenantId], [u].[UpdatedAt]
+      FROM [dbo].[Users] AS [u]
+      WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[Email] = @__ToLowerInvariant_0
+info: Mondabet.Identity.Infrastructure.Services.OtpService[0]
+      MFA session c304121b created for user 11111111-1111-1111-1111-111111111111, OTP: 091556
+info: Mondabet.Identity.Infrastructure.Services.OtpService[0]
+      OTP for 0500***000: 646580 (TTL 5m)
+info: System.Net.Http.HttpClient.IKeycloakService.LogicalHandler[100]
+      Start processing HTTP request POST http://localhost:8180/realms/mondabet/protocol/openid-connect/token
+info: System.Net.Http.HttpClient.IKeycloakService.ClientHandler[100]
+      Sending HTTP request POST http://localhost:8180/realms/mondabet/protocol/openid-connect/token
+info: System.Net.Http.HttpClient.IKeycloakService.ClientHandler[101]
+      Received HTTP response headers after 1743.1195ms - 200
+info: System.Net.Http.HttpClient.IKeycloakService.LogicalHandler[101]
+      End processing HTTP request after 1744.829ms - 200
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (30ms) [Parameters=[@__ToLowerInvariant_0='?' (Size = 200)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [u].[Id], [u].[CreatedAt], [u].[CreatedBy], [u].[Email], [u].[IsActive], [u].[IsDeleted], [u].[MobileNumber], [u].[RoleId], [u].[TenantId], [u].[UpdatedAt]
+      FROM [dbo].[Users] AS [u]
+      WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[Email] = @__ToLowerInvariant_0
+info: Mondabet.Identity.Infrastructure.Services.OtpService[0]
+      MFA session dfe9662e created for user 11111111-1111-1111-1111-111111111111, OTP: 683150
+info: Mondabet.Identity.Infrastructure.Services.OtpService[0]
+      OTP for 0500***000: 439635 (TTL 5m)
+info: System.Net.Http.HttpClient.IKeycloakService.LogicalHandler[100]
+      Start processing HTTP request POST http://localhost:8180/realms/mondabet/protocol/openid-connect/token
+info: System.Net.Http.HttpClient.IKeycloakService.ClientHandler[100]
+      Sending HTTP request POST http://localhost:8180/realms/mondabet/protocol/openid-connect/token
+info: System.Net.Http.HttpClient.IKeycloakService.ClientHandler[101]
+      Received HTTP response headers after 454.233ms - 200
+info: System.Net.Http.HttpClient.IKeycloakService.LogicalHandler[101]
+      End processing HTTP request after 454.3943ms - 200
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[@__ToLowerInvariant_0='?' (Size = 200)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [u].[Id], [u].[CreatedAt], [u].[CreatedBy], [u].[Email], [u].[IsActive], [u].[IsDeleted], [u].[MobileNumber], [u].[RoleId], [u].[TenantId], [u].[UpdatedAt]
+      FROM [dbo].[Users] AS [u]
+      WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[Email] = @__ToLowerInvariant_0
+info: Mondabet.Identity.Infrastructure.Services.OtpService[0]
+      MFA session 71b2054e created for user 11111111-1111-1111-1111-111111111111, OTP: 259344
+info: Mondabet.Identity.Infrastructure.Services.OtpService[0]
+      OTP for 0500***000: 386300 (TTL 5m)
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (67ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [u].[Id], [u].[CreatedAt], [u].[CreatedBy], [u].[Email], [u].[IsActive], [u].[IsDeleted], [u].[MobileNumber], [u].[RoleId], [u].[TenantId], [u].[UpdatedAt]
+      FROM [dbo].[Users] AS [u]
+      WHERE [u].[IsDeleted] = CAST(0 AS bit) AND [u].[Id] = @__id_0
+info: System.Net.Http.HttpClient.IKeycloakService.LogicalHandler[100]
+      Start processing HTTP request POST http://localhost:8180/realms/master/protocol/openid-connect/token
+info: System.Net.Http.HttpClient.IKeycloakService.ClientHandler[100]
+      Sending HTTP request POST http://localhost:8180/realms/master/protocol/openid-connect/token
+info: System.Net.Http.HttpClient.IKeycloakService.ClientHandler[101]
+      Received HTTP response headers after 590.9004ms - 401
+info: System.Net.Http.HttpClient.IKeycloakService.LogicalHandler[101]
+      End processing HTTP request after 591.5352ms - 401
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (63ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTime2), @p2='?' (Size = 4000), @p3='?' (Size = 100), @p4='?' (DbType = DateTime2), @p5='?' (DbType = Boolean), @p6='?' (Size = 500), @p7='?' (DbType = DateTime2), @p8='?' (Size = 500), @p9='?' (DbType = DateTime2), @p10='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      INSERT INTO [dbo].[RefreshTokens] ([Id], [CreatedAt], [CreatedBy], [DeviceId], [ExpiresAt], [IsDeleted], [ReplacedByToken], [RevokedAt], [Token], [UpdatedAt], [UserId])
+      VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10);

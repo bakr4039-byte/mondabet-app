@@ -1,0 +1,54 @@
+
+> mondabet-super-admin@1.0.0 start
+> ng serve --port 4200
+
+[33m>[39m Building...
+[32m√[39m Building...
+[1mInitial chunk files[22m                  [2m | [22m[1mNames[22m                    [2m | [22m [1mRaw size[22m
+[32mstyles.css[39m                           [2m | [22m[2mstyles[22m                   [2m | [22m [36m96.69 kB[39m[2m | [22m
+[32mpolyfills.js[39m                         [2m | [22m[2mpolyfills[22m                [2m | [22m [36m90.02 kB[39m[2m | [22m
+[32mmain.js[39m                              [2m | [22m[2mmain[22m                     [2m | [22m  [36m9.13 kB[39m[2m | [22m
+[32mchunk-4TUYVRLG.js[39m                    [2m | [22m[2m-[22m                        [2m | [22m  [36m1.65 kB[39m[2m | [22m
+[32mchunk-IJGCFU2O.js[39m                    [2m | [22m[2m-[22m                        [2m | [22m  [36m1.21 kB[39m[2m | [22m
+[32mchunk-T6UXUD27.js[39m                    [2m | [22m[2m-[22m                        [2m | [22m[36m971 bytes[39m[2m | [22m
+[32mchunk-VUJOFXKG.js[39m                    [2m | [22m[2m-[22m                        [2m | [22m[36m938 bytes[39m[2m | [22m
+[32mchunk-UBXQDFYX.js[39m                    [2m | [22m[2m-[22m                        [2m | [22m[36m190 bytes[39m[2m | [22m
+
+[1m [22m                                    [2m | [22m[1mInitial total[22m            [2m | [22m[1m200.81 kB[22m
+
+[1mLazy chunk files[22m                     [2m | [22m[1mNames[22m                    [2m | [22m [1mRaw size[22m
+[32mpackage-list.component-2WFLCLI4.js[39m   [2m | [22m[2mpackage-list-component[22m   [2m | [22m [36m12.78 kB[39m[2m | [22m
+[32mtenant-form.component-A34KPYNC.js[39m    [2m | [22m[2mtenant-form-component[22m    [2m | [22m [36m11.52 kB[39m[2m | [22m
+[32mtenant-list.component-ZLZE2VBY.js[39m    [2m | [22m[2mtenant-list-component[22m    [2m | [22m [36m11.34 kB[39m[2m | [22m
+[32mcompany-reports.component-F74IA5KC.js[39m[2m | [22m[2mcompany-reports-component[22m[2m | [22m [36m10.73 kB[39m[2m | [22m
+[32mlogin.component-T67ZWTNF.js[39m          [2m | [22m[2mlogin-component[22m          [2m | [22m  [36m7.49 kB[39m[2m | [22m
+[32mshell.component-52USFXXT.js[39m          [2m | [22m[2mshell-component[22m          [2m | [22m  [36m7.17 kB[39m[2m | [22m
+
+Application bundle generation complete. [24.051 seconds]
+
+Watch mode enabled. Watching for file changes...
+NOTE: Raw file sizes do not reflect development server per-request transformations.
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m4200[22m/[39m
+[2m[32m  ➜[39m[22m[2m  press [22m[1mh + enter[22m[2m to show help[22m
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m        [2m | [22m[1mNames[22m          [2m | [22m[1mRaw size[22m
+[32mmain.js[39m                    [2m | [22m[2mmain[22m           [2m | [22m [36m9.13 kB[39m[2m | [22m
+
+[1mLazy chunk files[22m           [2m | [22m[1mNames[22m          [2m | [22m[1mRaw size[22m
+[32mlogin.component-4U3QZAQ5.js[39m[2m | [22m[2mlogin-component[22m[2m | [22m [36m7.49 kB[39m[2m | [22m
+
+Application bundle generation complete. [1.908 seconds]
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m        [2m | [22m[1mNames[22m          [2m | [22m[1mRaw size[22m
+[32mmain.js[39m                    [2m | [22m[2mmain[22m           [2m | [22m [36m9.13 kB[39m[2m | [22m
+
+[1mLazy chunk files[22m           [2m | [22m[1mNames[22m          [2m | [22m[1mRaw size[22m
+[32mlogin.component-T67ZWTNF.js[39m[2m | [22m[2mlogin-component[22m[2m | [22m [36m7.49 kB[39m[2m | [22m
+
+Application bundle generation complete. [1.031 seconds]
+
+Page reload sent to client(s).

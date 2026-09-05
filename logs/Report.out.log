@@ -1,0 +1,10 @@
+E:\psma\Mondabet-Code\src\Shared\Mondabet.Shared\Mondabet.Shared.csproj : warning NU1902: Package 'OpenTelemetry.Exporter.OpenTelemetryProtocol' 1.9.0 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-4625-4j76-fww9 [E:\psma\Mondabet-Code\src\Services\Report\Mondabet.Report.Api\Mondabet.Report.Api.csproj]
+E:\psma\Mondabet-Code\src\Shared\Mondabet.Shared\Mondabet.Shared.csproj : warning NU1902: Package 'OpenTelemetry.Exporter.OpenTelemetryProtocol' 1.9.0 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-4625-4j76-fww9
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5008
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: E:\psma\Mondabet-Code\src\Services\Report\Mondabet.Report.Api

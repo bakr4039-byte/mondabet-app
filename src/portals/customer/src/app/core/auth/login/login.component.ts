@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -9,10 +10,26 @@ import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
 import { environment } from '../../../../environments/environment';
 
+interface LoginData {
+  accessToken: string | null;
+  refreshToken: string | null;
+  mfaRequired: boolean;
+  sessionToken: string | null;
+}
+interface AuthTokensData {
+  accessToken: string;
+  refreshToken: string;
+}
+interface ApiEnvelope<T> {
+  data: T;
+  error: { code: string; message: string } | null;
+  traceId: string;
+}
+
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, TranslateModule],
   template: `
     <div class="login-wrapper">
       <mat-card style="width:360px">
@@ -36,6 +53,7 @@ import { environment } from '../../../../environments/environment';
             <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || loading" style="width:100%">
               {{ 'auth.sign_in' | translate }}
             </button>
+            <p *ngIf="error" style="color:#c62828">{{ error }}</p>
           </form>
         </mat-card-content>
       </mat-card>
@@ -50,20 +68,57 @@ export class LoginComponent {
     tenantCode: ['', Validators.required],
   });
   loading = false;
+  error = '';
 
   constructor(private fb: FormBuilder, private http: HttpClient, private router: Router) {}
 
   submit(): void {
     if (this.form.invalid) return;
     this.loading = true;
+    this.error = '';
     this.http
-      .post<{ accessToken: string }>(`${environment.apiUrl}/auth/login`, this.form.value)
+      .post<ApiEnvelope<LoginData>>(`${environment.apiUrl}/auth/login`, this.form.value)
       .subscribe({
         next: (res) => {
-          localStorage.setItem('access_token', res.accessToken);
-          this.router.navigate(['/employees']);
+          const data = res.data;
+          if (data.mfaRequired && data.sessionToken) {
+            const otp = window.prompt('Enter the OTP code (see Identity service console log)');
+            if (!otp) {
+              this.loading = false;
+              this.error = 'OTP is required to complete sign-in.';
+              return;
+            }
+            this.http
+              .post<ApiEnvelope<AuthTokensData>>(`${environment.apiUrl}/auth/mfa/verify`, {
+                sessionToken: data.sessionToken,
+                otp,
+              })
+              .subscribe({
+                next: (verifyRes) => {
+                  localStorage.setItem('access_token', verifyRes.data.accessToken);
+                  localStorage.setItem('refresh_token', verifyRes.data.refreshToken);
+                  this.router.navigate(['/employees']);
+                },
+                error: () => {
+                  this.loading = false;
+                  this.error = 'Invalid or expired OTP.';
+                },
+              });
+            return;
+          }
+          if (data.accessToken) {
+            localStorage.setItem('access_token', data.accessToken);
+            if (data.refreshToken) localStorage.setItem('refresh_token', data.refreshToken);
+            this.router.navigate(['/employees']);
+          } else {
+            this.loading = false;
+            this.error = 'Login failed.';
+          }
         },
-        error: () => (this.loading = false),
+        error: () => {
+          this.loading = false;
+          this.error = 'Invalid credentials';
+        },
       });
   }
 }

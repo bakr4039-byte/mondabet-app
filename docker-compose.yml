@@ -1,16 +1,17 @@
 services:
   sqlserver:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+    image: mcr.microsoft.com/azure-sql-edge:latest
     container_name: mondabet-sqlserver
     environment:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: "${SA_PASSWORD}"
+      MSSQL_SA_PASSWORD: "${SA_PASSWORD}"
     ports:
       - "1433:1433"
     volumes:
       - sqlserver-data:/var/opt/mssql
     healthcheck:
-      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "${SA_PASSWORD}" -Q "SELECT 1" -C -No
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/1433 || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -73,7 +74,7 @@ services:
       KEYCLOAK_ADMIN: "${KEYCLOAK_ADMIN}"
       KEYCLOAK_ADMIN_PASSWORD: "${KEYCLOAK_ADMIN_PASSWORD}"
     ports:
-      - "8080:8080"
+      - "8180:8080"
     volumes:
       - ./infra/keycloak:/opt/keycloak/data/import
     healthcheck:

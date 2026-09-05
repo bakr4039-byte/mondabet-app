@@ -65,16 +65,73 @@ export class LoginComponent {
     this.loading = true;
     this.error = '';
 
+    // Note: every backend response is wrapped in an envelope by ResultExtensions.ToApiResult:
+    // { data: T, error: {...} | null, traceId: string }. The actual payload lives under "data".
+    interface LoginData {
+      accessToken: string | null;
+      refreshToken: string | null;
+      mfaRequired: boolean;
+      sessionToken: string | null;
+    }
+    interface AuthTokensData {
+      accessToken: string;
+      refreshToken: string;
+    }
+    interface ApiEnvelope<T> {
+      data: T;
+      error: { code: string; message: string } | null;
+      traceId: string;
+    }
+
     this.http
-      .post<{ accessToken: string }>(`${environment.apiUrl}/auth/login`, {
-        identifier: this.form.value.identifier,
-        password: this.form.value.password,
-        tenantCode: 'superadmin',
-      })
+      .post<ApiEnvelope<LoginData>>(
+        `${environment.apiUrl}/auth/login`,
+        {
+          identifier: this.form.value.identifier,
+          password: this.form.value.password,
+          tenantCode: 'superadmin',
+        },
+      )
       .subscribe({
         next: (res) => {
-          localStorage.setItem('access_token', res.accessToken);
-          this.router.navigate(['/tenants']);
+          const data = res.data;
+          if (data.mfaRequired && data.sessionToken) {
+            // TODO: replace with a proper OTP entry screen. The backend enforces
+            // mandatory OTP verification (dev: check the Identity service console
+            // for a line like "MFA session ... OTP: 123456").
+            const otp = window.prompt('Enter the OTP code (see Identity service console log)');
+            if (!otp) {
+              this.loading = false;
+              this.error = 'OTP is required to complete sign-in.';
+              return;
+            }
+            this.http
+              .post<ApiEnvelope<AuthTokensData>>(`${environment.apiUrl}/auth/mfa/verify`, {
+                sessionToken: data.sessionToken,
+                otp,
+              })
+              .subscribe({
+                next: (verifyRes) => {
+                  localStorage.setItem('access_token', verifyRes.data.accessToken);
+                  localStorage.setItem('refresh_token', verifyRes.data.refreshToken);
+                  this.router.navigate(['/tenants']);
+                },
+                error: () => {
+                  this.loading = false;
+                  this.error = 'Invalid or expired OTP.';
+                },
+              });
+            return;
+          }
+
+          if (data.accessToken) {
+            localStorage.setItem('access_token', data.accessToken);
+            if (data.refreshToken) localStorage.setItem('refresh_token', data.refreshToken);
+            this.router.navigate(['/tenants']);
+          } else {
+            this.loading = false;
+            this.error = 'Login failed.';
+          }
         },
         error: () => {
           this.loading = false;

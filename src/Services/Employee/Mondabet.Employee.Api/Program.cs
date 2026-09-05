@@ -27,13 +27,32 @@ builder.Services.AddScoped<Mondabet.Shared.Application.ITenantProvider>(
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.Authority = $"{builder.Configuration["Keycloak:BaseUrl"]}/realms/{builder.Configuration["Keycloak:Realm"]}";
-        options.RequireHttpsMetadata = builder.Environment.IsProduction();
-        options.TokenValidationParameters = new TokenValidationParameters
+        var publicKeyPem = builder.Configuration["Jwt:PublicKeyPem"];
+        if (!string.IsNullOrEmpty(publicKeyPem))
         {
-            ValidateAudience = false,
-            ClockSkew = TimeSpan.Zero
-        };
+            var rsa = System.Security.Cryptography.RSA.Create();
+            rsa.ImportFromPem(publicKeyPem);
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new Microsoft.IdentityModel.Tokens.RsaSecurityKey(rsa),
+                ValidateIssuer = true,
+                ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                ValidateAudience = true,
+                ValidAudience = builder.Configuration["Jwt:Audience"],
+                ClockSkew = TimeSpan.Zero
+            };
+        }
+        else
+        {
+            options.Authority = $"{builder.Configuration["Keycloak:BaseUrl"]}/realms/{builder.Configuration["Keycloak:Realm"]}";
+            options.RequireHttpsMetadata = builder.Environment.IsProduction();
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateAudience = false,
+                ClockSkew = TimeSpan.Zero
+            };
+        }
     });
 
 builder.Services.AddAuthorization();

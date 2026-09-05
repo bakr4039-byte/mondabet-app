@@ -8,7 +8,7 @@
   "duplicateEmailsAllowed": false,
   "resetPasswordAllowed": false,
   "editUsernameAllowed": false,
-  "bruteForceProtected": true,
+  "bruteForceProtected": false,
   "permanentLockout": false,
   "maxFailureWaitSeconds": 900,
   "minimumQuickLoginWaitSeconds": 60,
@@ -45,7 +45,7 @@
       "name": "Identity Service",
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
-      "secret": "${IDENTITY_SVC_SECRET}",
+      "secret": "IdentitySvcDevSecret2024!",
       "serviceAccountsEnabled": true,
       "authorizationServicesEnabled": false,
       "redirectUris": [],
@@ -54,7 +54,8 @@
       "attributes": {
         "access.token.signed.response.alg": "RS256",
         "id.token.signed.response.alg": "RS256"
-      }
+      },
+      "directAccessGrantsEnabled": true
     },
     {
       "clientId": "gateway",
@@ -78,7 +79,9 @@
       "redirectUris": [
         "mondabet://auth/*"
       ],
-      "webOrigins": ["+"],
+      "webOrigins": [
+        "+"
+      ],
       "protocol": "openid-connect",
       "attributes": {
         "access.token.signed.response.alg": "RS256",
@@ -130,9 +133,15 @@
         "name": "rsa-generated",
         "providerId": "rsa-generated",
         "config": {
-          "priority": ["100"],
-          "algorithm": ["RS256"],
-          "keySize": ["2048"]
+          "priority": [
+            "100"
+          ],
+          "algorithm": [
+            "RS256"
+          ],
+          "keySize": [
+            "2048"
+          ]
         }
       }
     ]
@@ -150,12 +159,118 @@
           "temporary": false
         }
       ],
-      "realmRoles": ["SuperAdmin"]
+      "realmRoles": [
+        "SuperAdmin"
+      ],
+      "id": "11111111-1111-1111-1111-111111111111",
+      "firstName": "Super",
+      "lastName": "Admin"
     }
   ],
   "smtpServer": {},
   "eventsEnabled": true,
   "eventsExpiration": 86400,
   "adminEventsEnabled": true,
-  "adminEventsDetailsEnabled": true
+  "adminEventsDetailsEnabled": true,
+  "requiredActions": [
+    {
+      "alias": "CONFIGURE_TOTP",
+      "name": "Configure OTP",
+      "providerId": "CONFIGURE_TOTP",
+      "enabled": true,
+      "defaultAction": false,
+      "priority": 10,
+      "config": {}
+    },
+    {
+      "alias": "TERMS_AND_CONDITIONS",
+      "name": "Terms and Conditions",
+      "providerId": "TERMS_AND_CONDITIONS",
+      "enabled": false,
+      "defaultAction": false,
+      "priority": 20,
+      "config": {}
+    },
+    {
+      "alias": "UPDATE_PASSWORD",
+      "name": "Update Password",
+      "providerId": "UPDATE_PASSWORD",
+      "enabled": true,
+      "defaultAction": false,
+      "priority": 30,
+      "config": {}
+    },
+    {
+      "alias": "UPDATE_PROFILE",
+      "name": "Update Profile",
+      "providerId": "UPDATE_PROFILE",
+      "enabled": true,
+      "defaultAction": false,
+      "priority": 40,
+      "config": {}
+    },
+    {
+      "alias": "VERIFY_EMAIL",
+      "name": "Verify Email",
+      "providerId": "VERIFY_EMAIL",
+      "enabled": true,
+      "defaultAction": false,
+      "priority": 50,
+      "config": {}
+    },
+    {
+      "alias": "delete_account",
+      "name": "Delete Account",
+      "providerId": "delete_account",
+      "enabled": false,
+      "defaultAction": false,
+      "priority": 60,
+      "config": {}
+    },
+    {
+      "alias": "webauthn-register",
+      "name": "Webauthn Register",
+      "providerId": "webauthn-register",
+      "enabled": true,
+      "defaultAction": false,
+      "priority": 70,
+      "config": {}
+    },
+    {
+      "alias": "webauthn-register-passwordless",
+      "name": "Webauthn Register Passwordless",
+      "providerId": "webauthn-register-passwordless",
+      "enabled": true,
+      "defaultAction": false,
+      "priority": 80,
+      "config": {}
+    },
+    {
+      "alias": "VERIFY_PROFILE",
+      "name": "Verify Profile",
+      "providerId": "VERIFY_PROFILE",
+      "enabled": false,
+      "defaultAction": false,
+      "priority": 90,
+      "config": {}
+    },
+    {
+      "alias": "delete_credential",
+      "name": "Delete Credential",
+      "providerId": "delete_credential",
+      "enabled": true,
+      "defaultAction": false,
+      "priority": 100,
+      "config": {}
+    },
+    {
+      "alias": "update_user_locale",
+      "name": "Update User Locale",
+      "providerId": "update_user_locale",
+      "enabled": true,
+      "defaultAction": false,
+      "priority": 1000,
+      "config": {}
+    }
+  ]
 }

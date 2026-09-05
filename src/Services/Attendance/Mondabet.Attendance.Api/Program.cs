@@ -14,9 +14,28 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.Authority = builder.Configuration["Keycloak:Authority"];
-        options.Audience = builder.Configuration["Keycloak:Audience"];
-        options.RequireHttpsMetadata = false;
+        var publicKeyPem = builder.Configuration["Jwt:PublicKeyPem"];
+        if (!string.IsNullOrEmpty(publicKeyPem))
+        {
+            var rsa = System.Security.Cryptography.RSA.Create();
+            rsa.ImportFromPem(publicKeyPem);
+            options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new Microsoft.IdentityModel.Tokens.RsaSecurityKey(rsa),
+                ValidateIssuer = true,
+                ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                ValidateAudience = true,
+                ValidAudience = builder.Configuration["Jwt:Audience"],
+                ClockSkew = TimeSpan.Zero
+            };
+        }
+        else
+        {
+            options.Authority = builder.Configuration["Keycloak:Authority"];
+            options.Audience = builder.Configuration["Keycloak:Audience"];
+            options.RequireHttpsMetadata = false;
+        }
     });
 
 builder.Services.AddAuthorization(options =>

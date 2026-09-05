@@ -1,0 +1,56 @@
+
+> mondabet-customer@1.0.0 start
+> ng serve --port 4201
+
+[33m>[39m Building...
+[32m√[39m Building...
+[1mInitial chunk files[22m                     [2m | [22m[1mNames[22m                       [2m | [22m [1mRaw size[22m
+[32mstyles.css[39m                              [2m | [22m[2mstyles[22m                      [2m | [22m [36m96.75 kB[39m[2m | [22m
+[32mpolyfills.js[39m                            [2m | [22m[2mpolyfills[22m                   [2m | [22m [36m90.02 kB[39m[2m | [22m
+[32mmain.js[39m                                 [2m | [22m[2mmain[22m                        [2m | [22m  [36m9.55 kB[39m[2m | [22m
+[32mchunk-IRMSN4BC.js[39m                       [2m | [22m[2m-[22m                           [2m | [22m  [36m1.70 kB[39m[2m | [22m
+[32mchunk-JSXKUYLT.js[39m                       [2m | [22m[2m-[22m                           [2m | [22m  [36m1.19 kB[39m[2m | [22m
+[32mchunk-VUJOFXKG.js[39m                       [2m | [22m[2m-[22m                           [2m | [22m[36m938 bytes[39m[2m | [22m
+[32mchunk-QDISSEYZ.js[39m                       [2m | [22m[2m-[22m                           [2m | [22m[36m817 bytes[39m[2m | [22m
+[32mchunk-UBXQDFYX.js[39m                       [2m | [22m[2m-[22m                           [2m | [22m[36m190 bytes[39m[2m | [22m
+
+[1m [22m                                       [2m | [22m[1mInitial total[22m               [2m | [22m[1m201.16 kB[22m
+
+[1mLazy chunk files[22m                        [2m | [22m[1mNames[22m                       [2m | [22m [1mRaw size[22m
+[32mleave-queue.component-Q7CX2XRB.js[39m       [2m | [22m[2mleave-queue-component[22m       [2m | [22m [36m15.31 kB[39m[2m | [22m
+[32mattendance-reports.component-X6X3EHBJ.js[39m[2m | [22m[2mattendance-reports-component[22m[2m | [22m [36m14.34 kB[39m[2m | [22m
+[32mbulk-messages.component-K5FIBG4G.js[39m     [2m | [22m[2mbulk-messages-component[22m     [2m | [22m [36m13.80 kB[39m[2m | [22m
+[32memployee-list.component-ZN7GXEWE.js[39m     [2m | [22m[2memployee-list-component[22m     [2m | [22m [36m12.80 kB[39m[2m | [22m
+[32mworkflow-builder.component-FMXFB2F2.js[39m  [2m | [22m[2mworkflow-builder-component[22m  [2m | [22m [36m11.76 kB[39m[2m | [22m
+[32mshell.component-QD6YROEE.js[39m             [2m | [22m[2mshell-component[22m             [2m | [22m  [36m8.14 kB[39m[2m | [22m
+[32mlogin.component-STSIHDNU.js[39m             [2m | [22m[2mlogin-component[22m             [2m | [22m  [36m7.87 kB[39m[2m | [22m
+[32memployee-form.component-FHTSHSO6.js[39m     [2m | [22m[2memployee-form-component[22m     [2m | [22m  [36m6.68 kB[39m[2m | [22m
+
+Application bundle generation complete. [23.424 seconds]
+
+Watch mode enabled. Watching for file changes...
+NOTE: Raw file sizes do not reflect development server per-request transformations.
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m4201[22m/[39m
+[2m[32m  ➜[39m[22m[2m  press [22m[1mh + enter[22m[2m to show help[22m
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m        [2m | [22m[1mNames[22m          [2m | [22m[1mRaw size[22m
+[32mmain.js[39m                    [2m | [22m[2mmain[22m           [2m | [22m [36m9.55 kB[39m[2m | [22m
+
+[1mLazy chunk files[22m           [2m | [22m[1mNames[22m          [2m | [22m[1mRaw size[22m
+[32mlogin.component-FKLGXPKA.js[39m[2m | [22m[2mlogin-component[22m[2m | [22m [36m7.87 kB[39m[2m | [22m
+
+Application bundle generation complete. [2.180 seconds]
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m        [2m | [22m[1mNames[22m          [2m | [22m[1mRaw size[22m
+[32mmain.js[39m                    [2m | [22m[2mmain[22m           [2m | [22m [36m9.55 kB[39m[2m | [22m
+
+[1mLazy chunk files[22m           [2m | [22m[1mNames[22m          [2m | [22m[1mRaw size[22m
+[32mlogin.component-STSIHDNU.js[39m[2m | [22m[2mlogin-component[22m[2m | [22m [36m7.87 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.741 seconds]
+
+Page reload sent to client(s).
