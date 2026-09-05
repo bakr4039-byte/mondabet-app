@@ -49,8 +49,18 @@ jobs:
       # Firebase.initializeApp() call is wrapped in a try/catch for exactly this case,
       # so the build and the app itself both still work, just without push notifications.
       - name: Inject Firebase config if provided
-        if: ${{ secrets.GOOGLE_SERVICES_JSON != '' }}
-        run: echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 -d > android/app/google-services.json
+        # GitHub Actions doesn't allow the `secrets` context inside a step's `if:`
+        # condition (only github/needs/vars/env/etc. are allowed there) - referencing
+        # it there fails workflow validation entirely ("Unrecognized named-value:
+        # 'secrets'") before the job ever runs. So the step always runs, and the
+        # presence check happens in the shell instead, against an env var populated
+        # from the secret (which IS a valid place to reference secrets).
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          if [ -n "$GOOGLE_SERVICES_JSON" ]; then
+            echo "$GOOGLE_SERVICES_JSON" | base64 -d > android/app/google-services.json
+          fi
 
       - name: Install dependencies
         run: flutter pub get
