@@ -56,7 +56,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         }
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    // Added alongside the new /api/v1/audit/employees/logs endpoint below - no existing
+    // endpoint in this service referenced a named policy before this, so this is purely
+    // additive and doesn't change any current endpoint's behavior.
+    options.AddPolicy("CompanyAdmin", policy =>
+        policy.RequireRole("CompanyAdmin", "SuperAdmin"));
+});
 builder.Services.AddHealthChecks()
     .AddSqlServer(builder.Configuration.GetConnectionString("EmployeeDb")!);
 builder.Services.AddEndpointsApiExplorer();
@@ -70,6 +77,11 @@ app.UseAuthorization();
 
 app.MapEmployeeEndpoints();
 app.MapDepartmentEndpoints();
+
+// Audit log viewer (new) - exposes the Employee/Department create/update/delete audit trail
+// that CreateEmployeeCommandHandler etc. already write, for the portals' new Audit Log screen.
+app.MapAuditLogEndpoints("/api/v1/audit/employees/logs");
+
 app.MapHealthChecks("/health/live");
 app.MapHealthChecks("/health/ready");
 

@@ -67,6 +67,12 @@ app.UseAuthorization();
 app.UseMiddleware<TenantMiddleware>();
 
 app.MapLeaveEndpoints();
+
+// Audit log viewer (new) - exposes the Leave.Approve/Leave.Reject audit trail that
+// LeaveApprovedAuditHandler/LeaveRejectedAuditHandler already write, for the portals' new
+// Audit Log screen.
+app.MapAuditLogEndpoints("/api/v1/audit/leaves/logs");
+
 app.MapHealthChecks("/health");
 
 // Auto-migrate on startup

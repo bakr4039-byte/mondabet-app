@@ -64,7 +64,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         }
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    // Added alongside the new /api/v1/audit/identity/logs endpoint below - no existing
+    // endpoint in this service referenced a named policy before this, so this is purely
+    // additive and doesn't change any current endpoint's behavior.
+    options.AddPolicy("CompanyAdmin", policy =>
+        policy.RequireRole("CompanyAdmin", "SuperAdmin"));
+});
 
 // Health checks
 builder.Services.AddHealthChecks()
@@ -81,6 +88,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapAuthEndpoints();
+
+// Audit log viewer (new) - the audit infrastructure below already records "User.Login" on
+// every successful sign-in; this exposes it for the portals' new Audit Log screen.
+app.MapAuditLogEndpoints("/api/v1/audit/identity/logs");
 
 app.MapHealthChecks("/health/live");
 app.MapHealthChecks("/health/ready");
