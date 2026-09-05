@@ -34,6 +34,17 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
+          # Pinned instead of "channel: stable" (which floats to whatever Flutter
+          # ships today). The very first real run of this workflow failed pub's
+          # dependency resolver: freezed ^2.5.7 / injectable_generator ^2.6.2 (as
+          # pinned in pubspec.yaml) only support analyzer <8.0.0, while the newest
+          # stable Flutter pulls in a `test`/flutter_test combo that requires
+          # analyzer >=8.0.0 - an unsatisfiable gap that has nothing to do with
+          # this project's own code. 3.24.5 matches the Flutter/Dart generation
+          # this pubspec.yaml was actually written and pinned against, so pub
+          # resolves everything without needing to touch any app source or
+          # bump any package to a breaking major version.
+          flutter-version: "3.24.5"
           channel: stable
           cache: true
 
