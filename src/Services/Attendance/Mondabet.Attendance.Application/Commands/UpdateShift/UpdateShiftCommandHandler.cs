@@ -25,7 +25,8 @@ public class UpdateShiftCommandHandler : IRequestHandler<UpdateShiftCommand, Res
 
         var d = request.Dto;
         shift.Update(d.Name, d.StartTime, d.EndTime,
-            d.Latitude, d.Longitude, d.RadiusMeters, d.DaysOfWeekJson);
+            d.Latitude, d.Longitude, d.RadiusMeters, d.DaysOfWeekJson,
+            d.GracePeriodMinutes, d.WindowStartMinutes, d.WindowEndMinutes);
 
         _repo.Update(shift);
         await _uow.SaveChangesAsync(ct);

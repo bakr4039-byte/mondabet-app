@@ -23,7 +23,8 @@ public class CreateShiftCommandHandler : IRequestHandler<CreateShiftCommand, Res
         var d = request.Dto;
         var shift = Shift.Create(
             d.Name, d.StartTime, d.EndTime,
-            d.Latitude, d.Longitude, d.RadiusMeters, d.DaysOfWeekJson);
+            d.Latitude, d.Longitude, d.RadiusMeters, d.DaysOfWeekJson,
+            d.GracePeriodMinutes, d.WindowStartMinutes, d.WindowEndMinutes);
 
         await _repo.AddAsync(shift, ct);
         await _uow.SaveChangesAsync(ct);
@@ -32,5 +33,6 @@ public class CreateShiftCommandHandler : IRequestHandler<CreateShiftCommand, Res
 
     internal static ShiftDto ToDto(Shift s) => new(
         s.Id, s.Name, s.StartTime, s.EndTime,
-        s.Latitude, s.Longitude, s.RadiusMeters, s.DaysOfWeekJson);
+        s.Latitude, s.Longitude, s.RadiusMeters, s.DaysOfWeekJson,
+        s.GracePeriodMinutes, s.WindowStartMinutes, s.WindowEndMinutes);
 }

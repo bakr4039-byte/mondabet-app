@@ -53,12 +53,13 @@ public static class AttendanceEndpoints
         });
 
         checkins.MapPost("/checkout", async (
+            double? lat, double? lng,
             IMediator m, HttpContext ctx, CancellationToken ct) =>
         {
             var employeeId = GetEmployeeId(ctx);
             if (employeeId == Guid.Empty) return Results.Unauthorized();
 
-            var result = await m.Send(new CheckOutCommand(employeeId), ct);
+            var result = await m.Send(new CheckOutCommand(employeeId, lat, lng), ct);
             return result.IsSuccess ? Results.Ok(result.Value) : Results.NotFound(result.Error);
         });
 

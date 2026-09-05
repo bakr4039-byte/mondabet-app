@@ -8,7 +8,10 @@ public record ShiftDto(
     double Latitude,
     double Longitude,
     int RadiusMeters,
-    string DaysOfWeekJson);
+    string DaysOfWeekJson,
+    int GracePeriodMinutes,
+    int WindowStartMinutes,
+    int WindowEndMinutes);
 
 public record ShiftCreateDto(
     string Name,
@@ -17,7 +20,10 @@ public record ShiftCreateDto(
     double Latitude,
     double Longitude,
     int RadiusMeters,
-    string DaysOfWeekJson);
+    string DaysOfWeekJson,
+    int GracePeriodMinutes = 15,
+    int WindowStartMinutes = 60,
+    int WindowEndMinutes = 60);
 
 public record ShiftUpdateDto(
     string Name,
@@ -26,4 +32,7 @@ public record ShiftUpdateDto(
     double Latitude,
     double Longitude,
     int RadiusMeters,
-    string DaysOfWeekJson);
+    string DaysOfWeekJson,
+    int GracePeriodMinutes = 15,
+    int WindowStartMinutes = 60,
+    int WindowEndMinutes = 60);

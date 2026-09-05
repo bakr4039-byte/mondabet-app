@@ -27,6 +27,15 @@ public class AttendanceRepository : IAttendanceRepository
         _ctx.AttendanceRecords.Update(entity);
     }
 
+    // Rejected attempts are kept for audit/compliance (so a clarification request can
+    // reference them) but must not block the employee from retrying the same shift.
+    private static readonly AttendanceCheckStatus[] RejectedStatuses =
+    {
+        AttendanceCheckStatus.OutOfFenceRejected,
+        AttendanceCheckStatus.OutOfShiftRejected,
+        AttendanceCheckStatus.NotScheduledToday,
+    };
+
     public async Task<bool> HasCheckInTodayAsync(
         Guid employeeId, Guid shiftId, CancellationToken ct = default)
     {
@@ -35,7 +44,8 @@ public class AttendanceRepository : IAttendanceRepository
             a => a.EmployeeId == employeeId
               && a.ShiftId == shiftId
               && a.CheckInTime >= today
-              && a.CheckInTime < today.AddDays(1),
+              && a.CheckInTime < today.AddDays(1)
+              && !RejectedStatuses.Contains(a.CheckInStatus),
             ct);
     }
 
@@ -46,7 +56,8 @@ public class AttendanceRepository : IAttendanceRepository
         return await _ctx.AttendanceRecords.FirstOrDefaultAsync(
             a => a.EmployeeId == employeeId
               && a.CheckInTime >= today
-              && a.CheckOutTime == null,
+              && a.CheckOutTime == null
+              && !RejectedStatuses.Contains(a.CheckInStatus),
             ct);
     }
 

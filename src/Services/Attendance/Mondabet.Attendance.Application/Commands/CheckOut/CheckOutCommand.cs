@@ -4,4 +4,7 @@ using Mondabet.Shared.Domain;
 
 namespace Mondabet.Attendance.Application.Commands.CheckOut;
 
-public record CheckOutCommand(Guid EmployeeId) : IRequest<Result<CheckInDto>>;
+public record CheckOutCommand(
+    Guid EmployeeId,
+    double? Latitude = null,
+    double? Longitude = null) : IRequest<Result<CheckInDto>>;
