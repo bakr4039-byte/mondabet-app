@@ -3,6 +3,7 @@ using Mondabet.Report.Application.DTOs;
 using Mondabet.Report.Application.Queries.AttendanceReport;
 using Mondabet.Report.Application.Queries.CompanyReport;
 using Mondabet.Report.Application.Queries.PayrollReport;
+using Mondabet.Report.Application.Queries.PunctualityAnalytics;
 
 namespace Mondabet.Report.Api.Endpoints;
 
@@ -52,6 +53,17 @@ public static class ReportEndpoints
             if (!result.IsSuccess) return Results.BadRequest(result.Error);
             var f = result.Value!;
             return Results.File(f.Content, f.ContentType, f.FileName);
+        }).RequireAuthorization("CompanyAdmin");
+
+        // Punctuality/discipline analytics dashboard - plain JSON (not a file download like the
+        // reports above), computed on demand from existing check-in data. Surfaces the
+        // PunctualityScore/ConsecutiveOnTimeDays/GamificationBadge concept that already existed
+        // as dead fields on Employee but was never actually calculated or shown anywhere.
+        app.MapGet("/api/v1/reports/punctuality", async (
+            DateTime from, DateTime to, IMediator m, CancellationToken ct) =>
+        {
+            var result = await m.Send(new PunctualityAnalyticsQuery(from, to), ct);
+            return result.IsSuccess ? Results.Ok(result.Value) : Results.BadRequest(result.Error);
         }).RequireAuthorization("CompanyAdmin");
     }
 }
