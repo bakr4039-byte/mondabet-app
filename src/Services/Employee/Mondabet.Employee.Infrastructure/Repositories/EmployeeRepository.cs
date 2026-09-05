@@ -55,4 +55,7 @@ public class EmployeeRepository : IEmployeeRepository
 
         return (items, total);
     }
+
+    public async Task<int> CountByDepartmentAsync(Guid departmentId, CancellationToken ct = default)
+        => await _ctx.Employees.CountAsync(e => e.DepartmentId == departmentId, ct);
 }

@@ -11,5 +11,7 @@ public class DepartmentConfiguration : IEntityTypeConfiguration<Department>
         builder.ToTable("Departments");
         builder.HasKey(d => d.Id);
         builder.Property(d => d.Name).IsRequired().HasMaxLength(200);
+        builder.Property(d => d.NameAr).HasMaxLength(200);
+        builder.Property(d => d.Code).HasMaxLength(20);
     }
 }

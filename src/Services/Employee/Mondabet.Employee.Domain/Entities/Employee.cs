@@ -15,6 +15,27 @@ public class Employee : BaseEntity
     public Guid DepartmentId { get; private set; }
     public Guid? ShiftId { get; private set; }
 
+    // Active/inactive is distinct from soft-delete (IsDeleted): a suspended employee is kept
+    // for history/reporting but shouldn't be able to check in or show up as staffed.
+    public bool IsActive { get; private set; } = true;
+
+    // HR / compliance document tracking — ideas carried over from the Google AI Studio
+    // prototype's Employee type. All optional: none of this is required for a plain
+    // employee record to work exactly as before.
+    public string? EmployeeNumber { get; private set; }
+    public int? FingerprintId { get; private set; }
+    public string? PinCode { get; private set; }
+    public DateOnly? IqamaExpiryDate { get; private set; }
+    public DateOnly? ContractExpiryDate { get; private set; }
+    public DateOnly? HealthCertExpiryDate { get; private set; }
+    public DateOnly? MedicalInsuranceExpiryDate { get; private set; }
+    public DateOnly? DrivingLicenseExpiryDate { get; private set; }
+
+    // Punctuality / gamification (idea from the prototype's Honor Board feature).
+    public double? PunctualityScore { get; private set; }
+    public int? ConsecutiveOnTimeDays { get; private set; }
+    public string? GamificationBadge { get; private set; }
+
     protected Employee() { }
 
     public static Employee Create(
@@ -27,7 +48,15 @@ public class Employee : BaseEntity
         string mobile,
         string email,
         Guid departmentId,
-        Guid? shiftId = null)
+        Guid? shiftId = null,
+        string? employeeNumber = null,
+        int? fingerprintId = null,
+        string? pinCode = null,
+        DateOnly? iqamaExpiryDate = null,
+        DateOnly? contractExpiryDate = null,
+        DateOnly? healthCertExpiryDate = null,
+        DateOnly? medicalInsuranceExpiryDate = null,
+        DateOnly? drivingLicenseExpiryDate = null)
         => new()
         {
             Id = Guid.NewGuid(),
@@ -40,7 +69,15 @@ public class Employee : BaseEntity
             MobileNumber = mobile,
             Email = email,
             DepartmentId = departmentId,
-            ShiftId = shiftId
+            ShiftId = shiftId,
+            EmployeeNumber = employeeNumber,
+            FingerprintId = fingerprintId,
+            PinCode = pinCode,
+            IqamaExpiryDate = iqamaExpiryDate,
+            ContractExpiryDate = contractExpiryDate,
+            HealthCertExpiryDate = healthCertExpiryDate,
+            MedicalInsuranceExpiryDate = medicalInsuranceExpiryDate,
+            DrivingLicenseExpiryDate = drivingLicenseExpiryDate,
         };
 
     public void Update(
@@ -50,7 +87,15 @@ public class Employee : BaseEntity
         string mobile,
         string email,
         Guid departmentId,
-        Guid? shiftId)
+        Guid? shiftId,
+        string? employeeNumber = null,
+        int? fingerprintId = null,
+        string? pinCode = null,
+        DateOnly? iqamaExpiryDate = null,
+        DateOnly? contractExpiryDate = null,
+        DateOnly? healthCertExpiryDate = null,
+        DateOnly? medicalInsuranceExpiryDate = null,
+        DateOnly? drivingLicenseExpiryDate = null)
     {
         FullNameAr = fullNameAr;
         FullNameEn = fullNameEn;
@@ -59,5 +104,29 @@ public class Employee : BaseEntity
         Email = email;
         DepartmentId = departmentId;
         ShiftId = shiftId;
+        EmployeeNumber = employeeNumber;
+        FingerprintId = fingerprintId;
+        PinCode = pinCode;
+        IqamaExpiryDate = iqamaExpiryDate;
+        ContractExpiryDate = contractExpiryDate;
+        HealthCertExpiryDate = healthCertExpiryDate;
+        MedicalInsuranceExpiryDate = medicalInsuranceExpiryDate;
+        DrivingLicenseExpiryDate = drivingLicenseExpiryDate;
+    }
+
+    public void Activate() => IsActive = true;
+    public void Deactivate() => IsActive = false;
+
+    /// <summary>
+    /// Called by the Attendance service's daily aggregation (or a scheduled job) to keep the
+    /// punctuality/gamification numbers current. Kept as plain setters here so any caller with
+    /// access to the entity can recompute them — the actual scoring rule lives wherever the
+    /// attendance stats are aggregated, not in this entity.
+    /// </summary>
+    public void UpdatePunctuality(double? score, int? consecutiveOnTimeDays, string? badge)
+    {
+        PunctualityScore = score;
+        ConsecutiveOnTimeDays = consecutiveOnTimeDays;
+        GamificationBadge = badge;
     }
 }

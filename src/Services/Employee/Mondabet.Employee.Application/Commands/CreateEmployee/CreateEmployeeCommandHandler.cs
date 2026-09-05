@@ -27,7 +27,10 @@ public class CreateEmployeeCommandHandler : IRequestHandler<CreateEmployeeComman
         var employee = EmployeeEntity.Create(
             Guid.NewGuid(), // UserId – will be provisioned in identity-svc in production
             d.FullNameAr, d.FullNameEn, d.Iqama, d.DateOfBirth,
-            d.JobTitle, d.MobileNumber, d.Email, d.DepartmentId, d.ShiftId);
+            d.JobTitle, d.MobileNumber, d.Email, d.DepartmentId, d.ShiftId,
+            d.EmployeeNumber, d.FingerprintId, d.PinCode,
+            d.IqamaExpiryDate, d.ContractExpiryDate, d.HealthCertExpiryDate,
+            d.MedicalInsuranceExpiryDate, d.DrivingLicenseExpiryDate);
 
         await _repo.AddAsync(employee, ct);
         await _uow.SaveChangesAsync(ct);
@@ -37,5 +40,9 @@ public class CreateEmployeeCommandHandler : IRequestHandler<CreateEmployeeComman
     internal static EmployeeDto ToDto(EmployeeEntity e) => new(
         e.Id, e.UserId, e.FullNameAr, e.FullNameEn, e.Iqama,
         e.DateOfBirth, e.JobTitle, e.MobileNumber, e.Email,
-        e.DepartmentId, e.ShiftId);
+        e.DepartmentId, e.ShiftId, e.IsActive,
+        e.EmployeeNumber, e.FingerprintId, e.PinCode,
+        e.IqamaExpiryDate, e.ContractExpiryDate, e.HealthCertExpiryDate,
+        e.MedicalInsuranceExpiryDate, e.DrivingLicenseExpiryDate,
+        e.PunctualityScore, e.ConsecutiveOnTimeDays, e.GamificationBadge);
 }

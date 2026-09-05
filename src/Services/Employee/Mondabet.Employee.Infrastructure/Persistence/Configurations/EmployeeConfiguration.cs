@@ -16,5 +16,9 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Domain.Entities.Em
         builder.Property(e => e.MobileNumber).IsRequired().HasMaxLength(20);
         builder.Property(e => e.Email).IsRequired().HasMaxLength(200);
         builder.HasIndex(e => e.Iqama).IsUnique();
+
+        builder.Property(e => e.EmployeeNumber).HasMaxLength(50);
+        builder.Property(e => e.PinCode).HasMaxLength(20);
+        builder.Property(e => e.GamificationBadge).HasMaxLength(100);
     }
 }

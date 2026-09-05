@@ -68,6 +68,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapEmployeeEndpoints();
+app.MapDepartmentEndpoints();
 app.MapHealthChecks("/health/live");
 app.MapHealthChecks("/health/ready");
 

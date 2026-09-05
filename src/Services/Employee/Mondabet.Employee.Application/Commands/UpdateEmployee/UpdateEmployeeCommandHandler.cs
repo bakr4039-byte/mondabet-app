@@ -25,7 +25,10 @@ public class UpdateEmployeeCommandHandler : IRequestHandler<UpdateEmployeeComman
 
         var d = request.Dto;
         employee.Update(d.FullNameAr, d.FullNameEn, d.JobTitle, d.MobileNumber,
-            d.Email, d.DepartmentId, d.ShiftId);
+            d.Email, d.DepartmentId, d.ShiftId,
+            d.EmployeeNumber, d.FingerprintId, d.PinCode,
+            d.IqamaExpiryDate, d.ContractExpiryDate, d.HealthCertExpiryDate,
+            d.MedicalInsuranceExpiryDate, d.DrivingLicenseExpiryDate);
 
         _repo.Update(employee);
         await _uow.SaveChangesAsync(ct);

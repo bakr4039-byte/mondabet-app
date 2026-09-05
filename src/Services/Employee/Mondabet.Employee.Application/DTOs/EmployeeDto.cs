@@ -11,7 +11,19 @@ public record EmployeeDto(
     string MobileNumber,
     string Email,
     Guid DepartmentId,
-    Guid? ShiftId);
+    Guid? ShiftId,
+    bool IsActive,
+    string? EmployeeNumber,
+    int? FingerprintId,
+    string? PinCode,
+    DateOnly? IqamaExpiryDate,
+    DateOnly? ContractExpiryDate,
+    DateOnly? HealthCertExpiryDate,
+    DateOnly? MedicalInsuranceExpiryDate,
+    DateOnly? DrivingLicenseExpiryDate,
+    double? PunctualityScore,
+    int? ConsecutiveOnTimeDays,
+    string? GamificationBadge);
 
 public record EmployeeCreateDto(
     string FullNameAr,
@@ -22,7 +34,15 @@ public record EmployeeCreateDto(
     string MobileNumber,
     string Email,
     Guid DepartmentId,
-    Guid? ShiftId);
+    Guid? ShiftId,
+    string? EmployeeNumber = null,
+    int? FingerprintId = null,
+    string? PinCode = null,
+    DateOnly? IqamaExpiryDate = null,
+    DateOnly? ContractExpiryDate = null,
+    DateOnly? HealthCertExpiryDate = null,
+    DateOnly? MedicalInsuranceExpiryDate = null,
+    DateOnly? DrivingLicenseExpiryDate = null);
 
 public record EmployeeUpdateDto(
     string FullNameAr,
@@ -31,7 +51,15 @@ public record EmployeeUpdateDto(
     string MobileNumber,
     string Email,
     Guid DepartmentId,
-    Guid? ShiftId);
+    Guid? ShiftId,
+    string? EmployeeNumber = null,
+    int? FingerprintId = null,
+    string? PinCode = null,
+    DateOnly? IqamaExpiryDate = null,
+    DateOnly? ContractExpiryDate = null,
+    DateOnly? HealthCertExpiryDate = null,
+    DateOnly? MedicalInsuranceExpiryDate = null,
+    DateOnly? DrivingLicenseExpiryDate = null);
 
 public record ImportResultDto(
     int Imported,
