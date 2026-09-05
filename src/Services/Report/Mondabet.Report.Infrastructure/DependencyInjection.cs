@@ -21,9 +21,13 @@ public static class DependencyInjection
         {
             client.BaseAddress = new Uri(configuration["Services:EmployeeBaseUrl"]!);
         });
+        services.AddHttpClient("TenantApi", client =>
+        {
+            client.BaseAddress = new Uri(configuration["Services:TenantBaseUrl"]!);
+        });
 
         services.AddScoped<IAttendanceDataService, AttendanceDataService>();
-        services.AddScoped<ITenantDataService, StubTenantDataService>();
+        services.AddScoped<ITenantDataService, TenantDataService>();
         return services;
     }
 }
