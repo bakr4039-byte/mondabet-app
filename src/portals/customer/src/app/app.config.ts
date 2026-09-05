@@ -13,6 +13,10 @@ import { employeeReducer } from './features/employees/store/employee.reducer';
 import { EmployeeEffects } from './features/employees/store/employee.effects';
 import { leaveReducer } from './features/leaves/store/leave.reducer';
 import { LeaveEffects } from './features/leaves/store/leave.effects';
+import { shiftReducer } from './features/shifts/store/shift.reducer';
+import { ShiftEffects } from './features/shifts/store/shift.effects';
+import { auditReducer } from './features/audit/store/audit.reducer';
+import { AuditEffects } from './features/audit/store/audit.effects';
 
 export function httpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -23,8 +27,13 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor])),
     provideAnimations(),
-    provideStore({ employees: employeeReducer, leaves: leaveReducer }),
-    provideEffects([EmployeeEffects, LeaveEffects]),
+    provideStore({
+      employees: employeeReducer,
+      leaves: leaveReducer,
+      shifts: shiftReducer,
+      audit: auditReducer,
+    }),
+    provideEffects([EmployeeEffects, LeaveEffects, ShiftEffects, AuditEffects]),
     importProvidersFrom(
       TranslateModule.forRoot({
         loader: { provide: TranslateLoader, useFactory: httpLoaderFactory, deps: [HttpClient] },

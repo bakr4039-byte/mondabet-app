@@ -37,6 +37,14 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
             <mat-icon matListItemIcon>message</mat-icon>
             <span matListItemTitle>{{ 'nav.messages' | translate }}</span>
           </a>
+          <a mat-list-item routerLink="/shifts">
+            <mat-icon matListItemIcon>schedule</mat-icon>
+            <span matListItemTitle>{{ 'nav.shifts' | translate }}</span>
+          </a>
+          <a mat-list-item routerLink="/audit">
+            <mat-icon matListItemIcon>history</mat-icon>
+            <span matListItemTitle>{{ 'nav.audit' | translate }}</span>
+          </a>
         </mat-nav-list>
       </mat-sidenav>
       <mat-sidenav-content>

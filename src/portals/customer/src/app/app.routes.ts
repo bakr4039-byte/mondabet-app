@@ -55,6 +55,34 @@ export const routes: Routes = [
             (m) => m.BulkMessagesComponent
           ),
       },
+      {
+        path: 'shifts',
+        loadComponent: () =>
+          import('./features/shifts/pages/shift-list/shift-list.component').then(
+            (m) => m.ShiftListComponent
+          ),
+      },
+      {
+        path: 'shifts/new',
+        loadComponent: () =>
+          import('./features/shifts/pages/shift-form/shift-form.component').then(
+            (m) => m.ShiftFormComponent
+          ),
+      },
+      {
+        path: 'shifts/:id/edit',
+        loadComponent: () =>
+          import('./features/shifts/pages/shift-form/shift-form.component').then(
+            (m) => m.ShiftFormComponent
+          ),
+      },
+      {
+        path: 'audit',
+        loadComponent: () =>
+          import('./features/audit/pages/audit-log/audit-log.component').then(
+            (m) => m.AuditLogComponent
+          ),
+      },
       { path: '', redirectTo: 'employees', pathMatch: 'full' },
     ],
   },

@@ -18,7 +18,9 @@
     "leaves": "چھٹی کی درخواستیں",
     "workflow": "ورک فلو",
     "reports": "رپورٹس",
-    "messages": "پیغامات"
+    "messages": "پیغامات",
+    "shifts": "شفٹیں",
+    "audit": "آڈٹ لاگ"
   },
   "employees": {
     "title": "ملازمین",
@@ -82,5 +84,54 @@
     "question": "سوال",
     "deadline": "جواب کی آخری تاریخ",
     "send_clarification": "وضاحت بھیجیں"
+  },
+  "shifts": {
+    "title": "شفٹیں",
+    "add": "شفٹ شامل کریں",
+    "edit": "شفٹ میں ترمیم کریں",
+    "name": "شفٹ کا نام",
+    "start_time": "شروع کا وقت",
+    "end_time": "ختم ہونے کا وقت",
+    "time_range": "وقت کی حد",
+    "is_split": "تقسیم شدہ شفٹ (دو ادوار)",
+    "split_hint": "دو الگ ادوار (مثلاً صبح اور شام کا حصہ) کے درمیان وقفے والی شفٹ کے لیے یہ فعال کریں۔",
+    "split": "تقسیم شدہ",
+    "first_period": "پہلا دور",
+    "second_period": "دوسرا دور",
+    "latitude": "عرض بلد",
+    "longitude": "طول بلد",
+    "radius": "حاضری کا دائرہ (میٹر)",
+    "meters": "میٹر",
+    "days_label": "کام کے دن",
+    "every_day": "ہر روز",
+    "days": {
+      "sun": "اتوار",
+      "mon": "پیر",
+      "tue": "منگل",
+      "wed": "بدھ",
+      "thu": "جمعرات",
+      "fri": "جمعہ",
+      "sat": "ہفتہ"
+    },
+    "grace_minutes": "رعایتی وقت (منٹ)",
+    "window_start_minutes": "چیک ان ونڈو شروع سے پہلے (منٹ)",
+    "window_end_minutes": "چیک آؤٹ ونڈو ختم ہونے کے بعد (منٹ)"
+  },
+  "audit": {
+    "title": "آڈٹ لاگ",
+    "sources": {
+      "identity": "لاگ اِن",
+      "employees": "ملازمین اور شعبے",
+      "leaves": "چھٹیاں"
+    },
+    "action": "ایکشن",
+    "action_placeholder": "مثال: Employee.Create",
+    "from": "شروع تاریخ",
+    "to": "اختتام تاریخ",
+    "occurred_at": "تاریخ اور وقت",
+    "entity_type": "قسم",
+    "entity_id": "شناخت",
+    "user_id": "صارف کی شناخت",
+    "ip_address": "آئی پی ایڈریس"
   }
 }

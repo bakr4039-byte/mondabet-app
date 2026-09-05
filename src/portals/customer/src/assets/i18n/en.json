@@ -18,7 +18,9 @@
     "leaves": "Leave Requests",
     "workflow": "Workflow",
     "reports": "Reports",
-    "messages": "Messages"
+    "messages": "Messages",
+    "shifts": "Shifts",
+    "audit": "Audit Log"
   },
   "employees": {
     "title": "Employees",
@@ -82,5 +84,54 @@
     "question": "Question",
     "deadline": "Response Deadline",
     "send_clarification": "Send Clarification"
+  },
+  "shifts": {
+    "title": "Shifts",
+    "add": "Add Shift",
+    "edit": "Edit Shift",
+    "name": "Shift Name",
+    "start_time": "Start Time",
+    "end_time": "End Time",
+    "time_range": "Time Range",
+    "is_split": "Split shift (two periods)",
+    "split_hint": "Enable this for a shift with two separate periods (e.g. a morning and afternoon block) with a gap in between.",
+    "split": "Split",
+    "first_period": "First Period",
+    "second_period": "Second Period",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "radius": "Geofence Radius (m)",
+    "meters": "m",
+    "days_label": "Working Days",
+    "every_day": "Every day",
+    "days": {
+      "sun": "Sun",
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat"
+    },
+    "grace_minutes": "Grace Period (min)",
+    "window_start_minutes": "Check-in Window Before (min)",
+    "window_end_minutes": "Check-out Window After (min)"
+  },
+  "audit": {
+    "title": "Audit Log",
+    "sources": {
+      "identity": "Logins",
+      "employees": "Employees & Departments",
+      "leaves": "Leave"
+    },
+    "action": "Action",
+    "action_placeholder": "e.g. Employee.Create",
+    "from": "From Date",
+    "to": "To Date",
+    "occurred_at": "Date & Time",
+    "entity_type": "Entity Type",
+    "entity_id": "Entity ID",
+    "user_id": "User ID",
+    "ip_address": "IP Address"
   }
 }
