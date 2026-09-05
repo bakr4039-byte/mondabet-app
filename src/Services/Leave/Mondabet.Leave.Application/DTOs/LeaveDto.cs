@@ -27,3 +27,12 @@ public record SubmitLeaveDto(
 public record ApproveLeaveDto(string? Comment);
 
 public record RejectLeaveDto(string Reason);
+
+/// A colleague suggested as coverage for an approved leave/permission/excuse - same
+/// department and job title (subject/specialty), not themselves already on approved
+/// leave during the same date range. See GetSubstituteCandidatesQueryHandler.
+public record SubstituteCandidateDto(
+    Guid EmployeeId,
+    string FullNameAr,
+    string FullNameEn,
+    string JobTitle);

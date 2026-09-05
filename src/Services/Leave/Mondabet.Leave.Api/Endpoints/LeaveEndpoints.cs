@@ -4,6 +4,7 @@ using Mondabet.Leave.Application.Commands.RejectLeave;
 using Mondabet.Leave.Application.Commands.SubmitLeave;
 using Mondabet.Leave.Application.DTOs;
 using Mondabet.Leave.Application.Queries.GetLeave;
+using Mondabet.Leave.Application.Queries.GetSubstituteCandidates;
 using Mondabet.Leave.Application.Queries.ListLeaves;
 using Mondabet.Leave.Domain.Entities;
 
@@ -61,6 +62,14 @@ public static class LeaveEndpoints
             Guid id, RejectLeaveDto dto, IMediator m, CancellationToken ct) =>
         {
             var result = await m.Send(new RejectLeaveCommand(id, dto), ct);
+            return result.IsSuccess ? Results.Ok(result.Value) : MapError(result.Error!);
+        }).RequireAuthorization("CompanyAdmin");
+
+        // Suggested substitute colleagues for an approved request (CompanyAdmin) - same
+        // department + job title, not themselves already approved-off during the same dates.
+        leaves.MapGet("/{id:guid}/substitutes", async (Guid id, IMediator m, CancellationToken ct) =>
+        {
+            var result = await m.Send(new GetSubstituteCandidatesQuery(id), ct);
             return result.IsSuccess ? Results.Ok(result.Value) : MapError(result.Error!);
         }).RequireAuthorization("CompanyAdmin");
     }
