@@ -20,7 +20,13 @@ public record CheckInDto(
     bool IsFieldPunch,
     string? FieldClientName,
     bool IsKioskPunch,
-    string? KioskTerminalId);
+    string? KioskTerminalId,
+    string? FieldVisitPurpose = null,
+    string? FieldProofPhoto = null,
+    ShiftPeriod? SplitPeriod = null,
+    int? WorkDurationMinutes = null,
+    int? OvertimeMinutes = null,
+    int? DeductionMinutes = null);
 
 public record CheckInRequestDto(
     Guid ShiftId,
@@ -33,7 +39,9 @@ public record CheckInRequestDto(
     bool IsFieldPunch = false,
     string? FieldClientName = null,
     bool IsKioskPunch = false,
-    string? KioskTerminalId = null);
+    string? KioskTerminalId = null,
+    string? FieldVisitPurpose = null,
+    string? FieldProofPhoto = null);
 
 public record AttendanceSummaryDto(
     Guid EmployeeId,

@@ -69,6 +69,7 @@ public class CheckInCommandHandler : IRequestHandler<CheckInCommand, Result<Chec
         }
 
         AttendanceCheckStatus status;
+        ShiftPeriod? splitPeriod = null;
         if (bypassesLocationRules)
         {
             status = d.IsFieldPunch ? AttendanceCheckStatus.FieldMission : AttendanceCheckStatus.Normal;
@@ -76,8 +77,13 @@ public class CheckInCommandHandler : IRequestHandler<CheckInCommand, Result<Chec
         else
         {
             var nowTod = TimeOnly.FromDateTime(now);
-            var windowStart = shift.StartTime.AddMinutes(-shift.WindowStartMinutes);
-            var windowEnd = shift.EndTime.AddMinutes(shift.WindowEndMinutes);
+            // For a split shift this picks whichever of the two periods (morning/afternoon)
+            // "now" is closer to; for a normal shift it's just (StartTime, EndTime) unchanged.
+            var (periodStart, periodEnd) = shift.GetActivePeriod(nowTod);
+            if (shift.IsSplitShift)
+                splitPeriod = periodStart == shift.FirstStartTime ? ShiftPeriod.First : ShiftPeriod.Second;
+            var windowStart = periodStart.AddMinutes(-shift.WindowStartMinutes);
+            var windowEnd = periodEnd.AddMinutes(shift.WindowEndMinutes);
             var withinWindow = IsTimeOfDayInRange(nowTod, windowStart, windowEnd);
 
             if (!withinWindow)
@@ -91,8 +97,8 @@ public class CheckInCommandHandler : IRequestHandler<CheckInCommand, Result<Chec
                 return Error.Validation("Check-in rejected: outside the shift's allowed time window.");
             }
 
-            var onTimeCutoff = shift.StartTime.AddMinutes(shift.GracePeriodMinutes);
-            status = IsTimeOfDayInRange(nowTod, shift.StartTime.AddMinutes(-shift.WindowStartMinutes), onTimeCutoff)
+            var onTimeCutoff = periodStart.AddMinutes(shift.GracePeriodMinutes);
+            status = IsTimeOfDayInRange(nowTod, periodStart.AddMinutes(-shift.WindowStartMinutes), onTimeCutoff)
                 ? AttendanceCheckStatus.OnTime
                 : AttendanceCheckStatus.Late;
         }
@@ -108,7 +114,10 @@ public class CheckInCommandHandler : IRequestHandler<CheckInCommand, Result<Chec
             isFieldPunch: d.IsFieldPunch,
             fieldClientName: d.FieldClientName,
             isKioskPunch: d.IsKioskPunch,
-            kioskTerminalId: d.KioskTerminalId);
+            kioskTerminalId: d.KioskTerminalId,
+            fieldVisitPurpose: d.FieldVisitPurpose,
+            fieldProofPhoto: d.FieldProofPhoto,
+            splitPeriod: splitPeriod);
 
         await _attendanceRepo.AddAsync(record, ct);
         await _uow.SaveChangesAsync(ct);
@@ -131,5 +140,7 @@ public class CheckInCommandHandler : IRequestHandler<CheckInCommand, Result<Chec
         r.IsWithinGeofence, r.DeviceId,
         r.CheckInStatus, r.CheckOutStatus,
         r.FacialVerified, r.IsFieldPunch, r.FieldClientName,
-        r.IsKioskPunch, r.KioskTerminalId);
+        r.IsKioskPunch, r.KioskTerminalId,
+        r.FieldVisitPurpose, r.FieldProofPhoto, r.SplitPeriod,
+        r.WorkDurationMinutes, r.OvertimeMinutes, r.DeductionMinutes);
 }

@@ -32,6 +32,16 @@ public class AttendanceRecord : BaseEntity
     public bool IsKioskPunch { get; private set; }
     public string? KioskTerminalId { get; private set; }
 
+    // Additional prototype fields: field-visit detail, split-shift tagging, and
+    // checkout-computed work/overtime/deduction minutes. All optional/nullable - a plain
+    // check-in/out that never touches any of this still works exactly as before.
+    public string? FieldVisitPurpose { get; private set; }
+    public string? FieldProofPhoto { get; private set; }
+    public ShiftPeriod? SplitPeriod { get; private set; }
+    public int? WorkDurationMinutes { get; private set; }
+    public int? OvertimeMinutes { get; private set; }
+    public int? DeductionMinutes { get; private set; }
+
     private AttendanceRecord() { }
 
     public static AttendanceRecord Create(
@@ -45,7 +55,10 @@ public class AttendanceRecord : BaseEntity
         bool isFieldPunch = false,
         string? fieldClientName = null,
         bool isKioskPunch = false,
-        string? kioskTerminalId = null) => new()
+        string? kioskTerminalId = null,
+        string? fieldVisitPurpose = null,
+        string? fieldProofPhoto = null,
+        ShiftPeriod? splitPeriod = null) => new()
     {
         Id = Guid.NewGuid(),
         EmployeeId = employeeId,
@@ -63,6 +76,9 @@ public class AttendanceRecord : BaseEntity
         FieldClientName = fieldClientName,
         IsKioskPunch = isKioskPunch,
         KioskTerminalId = kioskTerminalId,
+        FieldVisitPurpose = fieldVisitPurpose,
+        FieldProofPhoto = fieldProofPhoto,
+        SplitPeriod = splitPeriod,
         CreatedAt = DateTime.UtcNow,
         UpdatedAt = DateTime.UtcNow,
     };
@@ -70,13 +86,19 @@ public class AttendanceRecord : BaseEntity
     public void CheckOut(
         double? lat = null, double? lng = null,
         AttendanceCheckStatus? status = null,
-        string? note = null)
+        string? note = null,
+        int? workDurationMinutes = null,
+        int? overtimeMinutes = null,
+        int? deductionMinutes = null)
     {
         CheckOutTime = DateTime.UtcNow;
         CheckOutLat = lat;
         CheckOutLng = lng;
         CheckOutStatus = status;
         if (note is not null) RejectionReason = note;
+        WorkDurationMinutes = workDurationMinutes;
+        OvertimeMinutes = overtimeMinutes;
+        DeductionMinutes = deductionMinutes;
         UpdatedAt = DateTime.UtcNow;
     }
 }

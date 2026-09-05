@@ -11,7 +11,12 @@ public record ShiftDto(
     string DaysOfWeekJson,
     int GracePeriodMinutes,
     int WindowStartMinutes,
-    int WindowEndMinutes);
+    int WindowEndMinutes,
+    bool IsSplitShift = false,
+    TimeOnly? FirstStartTime = null,
+    TimeOnly? FirstEndTime = null,
+    TimeOnly? SecondStartTime = null,
+    TimeOnly? SecondEndTime = null);
 
 public record ShiftCreateDto(
     string Name,
@@ -23,7 +28,12 @@ public record ShiftCreateDto(
     string DaysOfWeekJson,
     int GracePeriodMinutes = 15,
     int WindowStartMinutes = 60,
-    int WindowEndMinutes = 60);
+    int WindowEndMinutes = 60,
+    bool IsSplitShift = false,
+    TimeOnly? FirstStartTime = null,
+    TimeOnly? FirstEndTime = null,
+    TimeOnly? SecondStartTime = null,
+    TimeOnly? SecondEndTime = null);
 
 public record ShiftUpdateDto(
     string Name,
@@ -35,4 +45,9 @@ public record ShiftUpdateDto(
     string DaysOfWeekJson,
     int GracePeriodMinutes = 15,
     int WindowStartMinutes = 60,
-    int WindowEndMinutes = 60);
+    int WindowEndMinutes = 60,
+    bool IsSplitShift = false,
+    TimeOnly? FirstStartTime = null,
+    TimeOnly? FirstEndTime = null,
+    TimeOnly? SecondStartTime = null,
+    TimeOnly? SecondEndTime = null);
