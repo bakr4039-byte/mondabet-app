@@ -10,17 +10,9 @@ import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/leave/presentation/screens/excuse_form_screen.dart';
 import '../../features/leave/presentation/screens/permission_form_screen.dart';
 import '../../features/leave/presentation/screens/vacation_form_screen.dart';
+import 'app_routes.dart';
 
-abstract class AppRoutes {
-  static const splash = '/';
-  static const login = '/login';
-  static const mfa = '/mfa';
-  static const home = '/home';
-  static const leaveVacation = '/leaves/vacation';
-  static const leavePermission = '/leaves/permission';
-  static const leaveExcuse = '/leaves/excuse';
-  static const clarificationRespond = '/clarifications/respond';
-}
+export 'app_routes.dart';
 
 class AppRouter {
   static final router = GoRouter(

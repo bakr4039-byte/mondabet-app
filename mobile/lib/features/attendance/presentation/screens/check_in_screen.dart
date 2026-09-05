@@ -2,8 +2,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../../../core/router/app_routes.dart';
 import '../bloc/attendance_bloc.dart';
 import '../bloc/attendance_event.dart';
 import '../bloc/attendance_state.dart';
@@ -207,6 +209,16 @@ class _CheckInScreenState extends State<CheckInScreen> {
                       )
                   : null,
             ),
+          const SizedBox(height: 8),
+          // Quick access to a permission/excuse request right from the attendance screen,
+          // rather than only from the separate Leaves tab - mirrors how "حضوري" (the Saudi
+          // MOE teacher-attendance app) puts استئذان one tap away from the main check-in
+          // screen instead of buried in a settings-style menu.
+          TextButton.icon(
+            icon: const Icon(Icons.edit_calendar_outlined),
+            label: Text('leave.permission'.tr()),
+            onPressed: () => ctx.push(AppRoutes.leavePermission),
+          ),
         ],
       ),
     );
