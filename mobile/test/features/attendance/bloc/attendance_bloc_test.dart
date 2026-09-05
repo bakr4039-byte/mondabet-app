@@ -97,6 +97,7 @@ void main() {
       expect: () => [
         const AttendanceLoading(),
         isA<AttendanceCheckedIn>(),
+        isA<AttendanceLoaded>().having((s) => s.openRecord, 'openRecord', isNotNull),
       ],
     );
   });

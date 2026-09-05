@@ -46,16 +46,39 @@ class AttendanceBloc extends Bloc<AttendanceEvent, AttendanceState> {
     );
     result.fold(
       (f) => emit(AttendanceFailure(f)),
-      (record) => emit(AttendanceCheckedIn(record)),
+      (record) {
+        // Emit the terminal state first (drives the one-time success snackbar), then fall
+        // back to AttendanceLoaded with the new open record so the screen can show a working
+        // Check Out button instead of getting stuck on a spinner.
+        emit(AttendanceCheckedIn(record));
+        emit(AttendanceLoaded(
+          shift: current.shift,
+          openRecord: record,
+          currentLat: current.currentLat,
+          currentLng: current.currentLng,
+          distanceToShift: current.distanceToShift,
+        ));
+      },
     );
   }
 
   Future<void> _onCheckOut(CheckOutRequested event, Emitter<AttendanceState> emit) async {
+    final current = state is AttendanceLoaded ? state as AttendanceLoaded : null;
+
     emit(const AttendanceLoading());
-    final result = await checkOut(event.recordId);
+    final result = await checkOut(lat: current?.currentLat, lng: current?.currentLng);
     result.fold(
       (f) => emit(AttendanceFailure(f)),
-      (_) => emit(const AttendanceCheckedOut()),
+      (_) {
+        emit(const AttendanceCheckedOut());
+        emit(AttendanceLoaded(
+          shift: current?.shift,
+          openRecord: null,
+          currentLat: current?.currentLat,
+          currentLng: current?.currentLng,
+          distanceToShift: current?.distanceToShift,
+        ));
+      },
     );
   }
 

@@ -39,9 +39,9 @@ class AttendanceRepositoryImpl implements AttendanceRepository {
   }
 
   @override
-  Future<Either<Failure, AttendanceRecord>> checkOut(String recordId) async {
+  Future<Either<Failure, AttendanceRecord>> checkOut({double? lat, double? lng}) async {
     try {
-      final record = await remoteDataSource.checkOut(recordId);
+      final record = await remoteDataSource.checkOut(lat: lat, lng: lng);
       return Right(record);
     } on DioException catch (e) {
       return Left(ServerFailure(e.message ?? 'Network error'));

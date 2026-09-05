@@ -12,7 +12,7 @@ abstract class AttendanceRepository {
     required double lng,
     required String deviceId,
   });
-  Future<Either<Failure, AttendanceRecord>> checkOut(String recordId);
+  Future<Either<Failure, AttendanceRecord>> checkOut({double? lat, double? lng});
   Future<Either<Failure, List<AttendanceRecord>>> getMyAttendance({
     DateTime? from,
     DateTime? to,

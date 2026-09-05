@@ -20,10 +20,7 @@ class CheckInRequested extends AttendanceEvent {
 }
 
 class CheckOutRequested extends AttendanceEvent {
-  final String recordId;
-  const CheckOutRequested(this.recordId);
-  @override
-  List<Object?> get props => [recordId];
+  const CheckOutRequested();
 }
 
 class LocationRefreshed extends AttendanceEvent {

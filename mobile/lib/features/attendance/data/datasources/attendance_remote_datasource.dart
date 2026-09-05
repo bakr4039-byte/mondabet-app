@@ -11,7 +11,7 @@ abstract class AttendanceRemoteDataSource {
     required double lng,
     required String deviceId,
   });
-  Future<AttendanceModel> checkOut(String recordId);
+  Future<AttendanceModel> checkOut({double? lat, double? lng});
   Future<List<AttendanceModel>> getMyAttendance({DateTime? from, DateTime? to});
 }
 
@@ -41,8 +41,16 @@ class AttendanceRemoteDataSourceImpl implements AttendanceRemoteDataSource {
   }
 
   @override
-  Future<AttendanceModel> checkOut(String recordId) async {
-    final resp = await _dio.post<Map<String, dynamic>>('/checkins/$recordId/checkout');
+  Future<AttendanceModel> checkOut({double? lat, double? lng}) async {
+    // The backend resolves the caller's own open check-in server-side (POST /checkins/checkout,
+    // no record id in the path) - there is no /checkins/{id}/checkout endpoint.
+    final resp = await _dio.post<Map<String, dynamic>>(
+      '/checkins/checkout',
+      queryParameters: {
+        if (lat != null) 'lat': lat,
+        if (lng != null) 'lng': lng,
+      },
+    );
     return AttendanceModel.fromJson(resp.data!);
   }
 

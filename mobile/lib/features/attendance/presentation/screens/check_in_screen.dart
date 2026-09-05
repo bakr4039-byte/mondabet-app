@@ -123,6 +123,7 @@ class _CheckInScreenState extends State<CheckInScreen> {
   Widget _buildBottomPanel(BuildContext ctx, AttendanceLoaded state) {
     final inZone = state.isWithinGeofence;
     final dist = state.distanceToShift;
+    final isCheckedIn = state.openRecord != null;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -134,7 +135,7 @@ class _CheckInScreenState extends State<CheckInScreen> {
               state.shift!.name,
               style: Theme.of(ctx).textTheme.titleMedium,
             ),
-          if (dist != null)
+          if (dist != null && !isCheckedIn)
             Text(
               inZone
                   ? 'attendance.within_geofence'.tr()
@@ -143,19 +144,27 @@ class _CheckInScreenState extends State<CheckInScreen> {
               style: TextStyle(color: inZone ? Colors.green : Colors.orange),
             ),
           const SizedBox(height: 12),
-          ElevatedButton.icon(
-            icon: const Icon(Icons.login),
-            label: Text('attendance.check_in'.tr()),
-            onPressed: inZone && _position != null
-                ? () => ctx.read<AttendanceBloc>().add(
-                      CheckInRequested(
-                        lat: _position!.latitude,
-                        lng: _position!.longitude,
-                        deviceId: 'device-001',
-                      ),
-                    )
-                : null,
-          ),
+          if (isCheckedIn)
+            ElevatedButton.icon(
+              icon: const Icon(Icons.logout),
+              label: Text('attendance.check_out'.tr()),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+              onPressed: () => ctx.read<AttendanceBloc>().add(const CheckOutRequested()),
+            )
+          else
+            ElevatedButton.icon(
+              icon: const Icon(Icons.login),
+              label: Text('attendance.check_in'.tr()),
+              onPressed: inZone && _position != null
+                  ? () => ctx.read<AttendanceBloc>().add(
+                        CheckInRequested(
+                          lat: _position!.latitude,
+                          lng: _position!.longitude,
+                          deviceId: 'device-001',
+                        ),
+                      )
+                  : null,
+            ),
         ],
       ),
     );

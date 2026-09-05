@@ -8,6 +8,6 @@ class CheckOutUseCase {
   final AttendanceRepository repository;
   CheckOutUseCase(this.repository);
 
-  Future<Either<Failure, AttendanceRecord>> call(String recordId) =>
-      repository.checkOut(recordId);
+  Future<Either<Failure, AttendanceRecord>> call({double? lat, double? lng}) =>
+      repository.checkOut(lat: lat, lng: lng);
 }
