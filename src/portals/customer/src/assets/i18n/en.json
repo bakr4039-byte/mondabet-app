@@ -5,7 +5,8 @@
     "search": "Search",
     "loading": "Loading...",
     "no_data": "No data available",
-    "submit": "Submit"
+    "submit": "Submit",
+    "close": "Close"
   },
   "auth": {
     "login": "Sign In",
@@ -18,6 +19,7 @@
     "leaves": "Leave Requests",
     "workflow": "Workflow",
     "reports": "Reports",
+    "punctuality": "Punctuality",
     "messages": "Messages",
     "shifts": "Shifts",
     "audit": "Audit Log"
@@ -48,7 +50,11 @@
       "vacation": "Vacation",
       "permission": "Permission",
       "excuse": "Excuse"
-    }
+    },
+    "substitutes_button": "Suggest substitute",
+    "substitutes_title": "Suggested substitutes",
+    "substitutes_empty": "No available colleague matches this employee's department and job title for these dates.",
+    "substitutes_error": "Couldn't load substitute suggestions. Please try again."
   },
   "workflow": {
     "title": "Workflow Builder",
@@ -69,6 +75,26 @@
     "days_absent": "Days Absent",
     "total_hours": "Total Hours",
     "late_count": "Late Count"
+  },
+  "punctuality": {
+    "title": "Punctuality & Discipline Analytics",
+    "from": "From Date",
+    "to": "To Date",
+    "generate": "Generate",
+    "employee": "Employee",
+    "total_check_ins": "Check-ins",
+    "on_time_count": "On Time",
+    "late_count": "Late",
+    "score": "Punctuality Score",
+    "streak": "Current Streak (days)",
+    "badge": "Badge",
+    "empty": "No attendance data for this date range.",
+    "badges": {
+      "Gold": "Gold",
+      "Silver": "Silver",
+      "Bronze": "Bronze",
+      "None": "—"
+    }
   },
   "messages": {
     "title": "Messages & Clarifications",

@@ -49,6 +49,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'punctuality',
+        loadComponent: () =>
+          import('./features/reports/pages/punctuality-analytics/punctuality-analytics.component').then(
+            (m) => m.PunctualityAnalyticsComponent
+          ),
+      },
+      {
         path: 'messages',
         loadComponent: () =>
           import('./features/messages/pages/bulk-messages/bulk-messages.component').then(

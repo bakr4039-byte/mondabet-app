@@ -33,6 +33,10 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
             <mat-icon matListItemIcon>bar_chart</mat-icon>
             <span matListItemTitle>{{ 'nav.reports' | translate }}</span>
           </a>
+          <a mat-list-item routerLink="/punctuality">
+            <mat-icon matListItemIcon>military_tech</mat-icon>
+            <span matListItemTitle>{{ 'nav.punctuality' | translate }}</span>
+          </a>
           <a mat-list-item routerLink="/messages">
             <mat-icon matListItemIcon>message</mat-icon>
             <span matListItemTitle>{{ 'nav.messages' | translate }}</span>
