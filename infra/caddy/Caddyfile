@@ -1,0 +1,20 @@
+# Caddy automatically gets and renews a Let's Encrypt certificate for each domain
+# below the first time it starts, using ACME_EMAIL for the registration - no manual
+# certbot/nginx-ssl setup needed. Requires DOMAIN's DNS (three A/AAAA records, or a
+# wildcard) to already point at this server's public IP, and ports 80/443 reachable
+# from the internet (both needed for the ACME HTTP challenge + HTTPS itself).
+{
+	email {$ACME_EMAIL}
+}
+
+api.{$DOMAIN} {
+	reverse_proxy gateway:8080
+}
+
+app.{$DOMAIN} {
+	reverse_proxy customer-portal:80
+}
+
+admin.{$DOMAIN} {
+	reverse_proxy super-admin-portal:80
+}

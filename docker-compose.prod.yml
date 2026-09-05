@@ -1,0 +1,328 @@
+# Full-stack deployment compose file - sized for a small always-free VM (e.g. Oracle
+# Cloud's Always Free ARM shape, ~2 OCPU/12GB RAM as of 2026).
+#
+# This is a separate, self-contained file from docker-compose.yml (which only brings
+# up the five infrastructure containers for local development against services run
+# individually via `dotnet run`). This file additionally containerizes the Gateway,
+# all 9 microservices, and both Angular portals, wires them together with the same
+# internal DNS names the Gateway's YARP routes and each service's cross-service HTTP
+# clients already expect (e.g. "employee-svc", "sqlserver", "keycloak"), and puts a
+# Caddy reverse proxy in front for a single public domain with automatic HTTPS.
+#
+# None of the services' own appsettings.json files are touched - every setting that
+# needs a production value (connection strings, Keycloak endpoints, RabbitMQ
+# credentials, allowed CORS origins) is supplied here as an environment variable
+# override, using ASP.NET Core's standard "Section__Key" convention, which always
+# wins over whatever is baked into appsettings.json.
+#
+# Usage:
+#   cp .env.example .env      # then edit passwords + add DOMAIN and ACME_EMAIL
+#   docker compose -f docker-compose.prod.yml up -d --build
+#
+# mem_limit values are safety caps, not reservations - the real workload measured
+# well under half of the box's 12GB, these just stop any one runaway container
+# (Keycloak's JVM and SQL Server are the usual suspects) from starving the rest.
+
+services:
+  # ---------------------------------------------------------------- infrastructure
+  sqlserver:
+    image: mcr.microsoft.com/azure-sql-edge:latest
+    container_name: mondabet-sqlserver
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "${SA_PASSWORD}"
+      MSSQL_SA_PASSWORD: "${SA_PASSWORD}"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/1433 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    mem_limit: 2g
+
+  redis:
+    image: redis:7-alpine
+    container_name: mondabet-redis
+    restart: unless-stopped
+    command: redis-server --requirepass "${REDIS_PASSWORD}"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: redis-cli -a "${REDIS_PASSWORD}" ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    mem_limit: 256m
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: mondabet-rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: "${RABBITMQ_USER}"
+      RABBITMQ_DEFAULT_PASS: "${RABBITMQ_PASS}"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    mem_limit: 512m
+
+  minio:
+    image: minio/minio:latest
+    container_name: mondabet-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: "${MINIO_ROOT_USER}"
+      MINIO_ROOT_PASSWORD: "${MINIO_ROOT_PASSWORD}"
+    volumes:
+      - minio-data:/data
+    healthcheck:
+      test: curl -f http://localhost:9000/minio/health/live
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    mem_limit: 512m
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0
+    container_name: mondabet-keycloak
+    restart: unless-stopped
+    command: start-dev --import-realm
+    environment:
+      KEYCLOAK_ADMIN: "${KEYCLOAK_ADMIN}"
+      KEYCLOAK_ADMIN_PASSWORD: "${KEYCLOAK_ADMIN_PASSWORD}"
+    volumes:
+      - ./infra/keycloak:/opt/keycloak/data/import
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/8080 && echo -e 'GET /health/ready HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && cat <&3 | grep -q '200'"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+    mem_limit: 1g
+
+  # ---------------------------------------------------------------------- gateway
+  gateway:
+    build:
+      context: .
+      dockerfile: src/Gateway/Mondabet.Gateway/Dockerfile
+    container_name: mondabet-gateway
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      Keycloak__BaseUrl: http://keycloak:8080
+      Keycloak__Realm: mondabet
+      AllowedOrigins__0: https://app.${DOMAIN}
+      AllowedOrigins__1: https://admin.${DOMAIN}
+    depends_on:
+      keycloak: { condition: service_healthy }
+    mem_limit: 300m
+
+  # ------------------------------------------------------------------ microservices
+  identity-svc:
+    build:
+      context: .
+      dockerfile: src/Services/Identity/Mondabet.Identity.Api/Dockerfile
+    container_name: mondabet-identity
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__IdentityDb: Server=sqlserver,1433;Database=MondabetIdentity;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=true
+      ConnectionStrings__Redis: redis:6379,password=${REDIS_PASSWORD}
+      Keycloak__BaseUrl: http://keycloak:8080
+      Keycloak__Realm: mondabet
+    depends_on:
+      sqlserver: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      keycloak: { condition: service_healthy }
+    mem_limit: 300m
+
+  tenant-svc:
+    build:
+      context: .
+      dockerfile: src/Services/Tenant/Mondabet.Tenant.Api/Dockerfile
+    container_name: mondabet-tenant
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__TenantDb: Server=sqlserver,1433;Database=MondabetTenant;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=true
+      Keycloak__BaseUrl: http://keycloak:8080
+      Keycloak__Realm: mondabet
+    depends_on:
+      sqlserver: { condition: service_healthy }
+      keycloak: { condition: service_healthy }
+    mem_limit: 250m
+
+  employee-svc:
+    build:
+      context: .
+      dockerfile: src/Services/Employee/Mondabet.Employee.Api/Dockerfile
+    container_name: mondabet-employee
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__EmployeeDb: Server=sqlserver,1433;Database=MondabetEmployee;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=true
+      Keycloak__BaseUrl: http://keycloak:8080
+      Keycloak__Realm: mondabet
+    depends_on:
+      sqlserver: { condition: service_healthy }
+      keycloak: { condition: service_healthy }
+    mem_limit: 300m
+
+  attendance-svc:
+    build:
+      context: .
+      dockerfile: src/Services/Attendance/Mondabet.Attendance.Api/Dockerfile
+    container_name: mondabet-attendance
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: Server=sqlserver,1433;Database=MondabetDb;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;
+      Keycloak__Authority: http://keycloak:8080/realms/mondabet
+      Services__EmployeeBaseUrl: http://employee-svc:8080
+    depends_on:
+      sqlserver: { condition: service_healthy }
+      keycloak: { condition: service_healthy }
+      employee-svc: { condition: service_started }
+    mem_limit: 300m
+
+  leave-svc:
+    build:
+      context: .
+      dockerfile: src/Services/Leave/Mondabet.Leave.Api/Dockerfile
+    container_name: mondabet-leave
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: Server=sqlserver,1433;Database=MondabetDb;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;
+      Keycloak__Authority: http://keycloak:8080/realms/mondabet
+      Services__EmployeeBaseUrl: http://employee-svc:8080
+    depends_on:
+      sqlserver: { condition: service_healthy }
+      keycloak: { condition: service_healthy }
+      employee-svc: { condition: service_started }
+    mem_limit: 300m
+
+  workflow-svc:
+    build:
+      context: .
+      dockerfile: src/Services/Workflow/Mondabet.Workflow.Api/Dockerfile
+    container_name: mondabet-workflow
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: Server=sqlserver,1433;Database=MondabetDb;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;
+      Keycloak__Authority: http://keycloak:8080/realms/mondabet
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USER}
+      RabbitMQ__Password: ${RABBITMQ_PASS}
+    depends_on:
+      sqlserver: { condition: service_healthy }
+      keycloak: { condition: service_healthy }
+      rabbitmq: { condition: service_healthy }
+    mem_limit: 300m
+
+  report-svc:
+    build:
+      context: .
+      dockerfile: src/Services/Report/Mondabet.Report.Api/Dockerfile
+    container_name: mondabet-report
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      Keycloak__Authority: http://keycloak:8080/realms/mondabet
+      Services__AttendanceBaseUrl: http://attendance-svc:8080
+      Services__EmployeeBaseUrl: http://employee-svc:8080
+      Services__TenantBaseUrl: http://tenant-svc:8080
+    depends_on:
+      keycloak: { condition: service_healthy }
+      employee-svc: { condition: service_started }
+      attendance-svc: { condition: service_started }
+      tenant-svc: { condition: service_started }
+    mem_limit: 300m
+
+  notification-svc:
+    build:
+      context: .
+      dockerfile: src/Services/Notification/Mondabet.Notification.Api/Dockerfile
+    container_name: mondabet-notification
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      Keycloak__Authority: http://keycloak:8080/realms/mondabet
+      # Unifonic (SMS) and Fcm (push) both keep their dev placeholder values from
+      # appsettings.json until real credentials are supplied - notification-svc still
+      # runs fine without them, those specific integrations just won't send anything.
+    depends_on:
+      keycloak: { condition: service_healthy }
+    mem_limit: 250m
+
+  clarification-svc:
+    build:
+      context: .
+      dockerfile: src/Services/Clarification/Mondabet.Clarification.Api/Dockerfile
+    container_name: mondabet-clarification
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: Server=sqlserver,1433;Database=MondabetDb;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;
+      Keycloak__Authority: http://keycloak:8080/realms/mondabet
+    depends_on:
+      sqlserver: { condition: service_healthy }
+      keycloak: { condition: service_healthy }
+    mem_limit: 250m
+
+  # -------------------------------------------------------------------------- portals
+  customer-portal:
+    build:
+      context: src/portals/customer
+      args:
+        API_URL: https://api.${DOMAIN}/api/v1
+    container_name: mondabet-customer-portal
+    restart: unless-stopped
+    mem_limit: 100m
+
+  super-admin-portal:
+    build:
+      context: src/portals/super-admin
+      args:
+        API_URL: https://api.${DOMAIN}/api/v1
+    container_name: mondabet-super-admin-portal
+    restart: unless-stopped
+    mem_limit: 100m
+
+  # --------------------------------------------------------------- reverse proxy
+  caddy:
+    image: caddy:2-alpine
+    container_name: mondabet-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: "${DOMAIN}"
+      ACME_EMAIL: "${ACME_EMAIL}"
+    volumes:
+      - ./infra/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - gateway
+      - customer-portal
+      - super-admin-portal
+    mem_limit: 150m
+
+volumes:
+  sqlserver-data:
+  redis-data:
+  rabbitmq-data:
+  minio-data:
+  caddy-data:
+  caddy-config:
