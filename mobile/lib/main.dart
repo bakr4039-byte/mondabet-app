@@ -18,9 +18,37 @@ import 'features/reports/presentation/bloc/reports_bloc.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Hive.initFlutter();
-  await EasyLocalization.ensureInitialized();
-  configureDependencies();
+  // Release builds normally show a plain blank/gray box (no text) for any
+  // widget-build error, and a Dart exception thrown before runApp() shows
+  // nothing at all - by design, so end users never see a stack trace. That's
+  // exactly why the very first real-device install just showed a plain white
+  // screen with zero information. Temporarily overriding both to print the
+  // real error on screen instead - this is diagnostic-only (it doesn't change
+  // anything about the success path) and should come back out once the app
+  // is confirmed launching correctly on-device.
+  ErrorWidget.builder = (FlutterErrorDetails details) => Material(
+        color: Colors.white,
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              'Widget build error:\n${details.exceptionAsString()}',
+              style: const TextStyle(color: Colors.red, fontSize: 12),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      );
+
+  try {
+    await Hive.initFlutter();
+    await EasyLocalization.ensureInitialized();
+    configureDependencies();
+  } catch (e, st) {
+    debugPrint('Fatal startup error before runApp(): $e\n$st');
+    runApp(_StartupErrorApp(error: '$e'));
+    return;
+  }
 
   // Firebase/FCM need a real Firebase project registered (google-services.json on
   // Android, GoogleService-Info.plist on iOS) before this succeeds - this was
@@ -44,6 +72,35 @@ void main() async {
       child: const MondabetApp(),
     ),
   );
+}
+
+/// Shown only if something throws before runApp() ever gets called (e.g.
+/// Hive/EasyLocalization/DI setup) - diagnostic-only, see the comment above.
+class _StartupErrorApp extends StatelessWidget {
+  final String error;
+  const _StartupErrorApp({required this.error});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Center(
+              child: Text(
+                'Startup failed:\n$error',
+                style: const TextStyle(color: Colors.red, fontSize: 13),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class MondabetApp extends StatefulWidget {
