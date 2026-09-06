@@ -25,7 +25,7 @@ class LeaveRepositoryImpl implements LeaveRepository {
       );
       return Right(result);
     } on DioException catch (e) {
-      return Left(ServerFailure(e.message ?? 'Network error'));
+      return Left(ServerFailure(e.response?.statusCode?.toString() ?? 'unknown', e.message ?? 'Network error'));
     }
   }
 
@@ -38,7 +38,7 @@ class LeaveRepositoryImpl implements LeaveRepository {
       final results = await remoteDataSource.getMyLeaves(type: type, status: status);
       return Right(results);
     } on DioException catch (e) {
-      return Left(ServerFailure(e.message ?? 'Network error'));
+      return Left(ServerFailure(e.response?.statusCode?.toString() ?? 'unknown', e.message ?? 'Network error'));
     }
   }
 }

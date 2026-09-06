@@ -43,7 +43,7 @@ class AttendanceRepositoryImpl implements AttendanceRepository {
         final cached = await localDataSource.getCachedShift();
         if (cached != null) return Right(cached);
       }
-      return Left(ServerFailure(e.message ?? 'Network error'));
+      return Left(ServerFailure(e.response?.statusCode?.toString() ?? 'unknown', e.message ?? 'Network error'));
     }
   }
 
@@ -66,7 +66,7 @@ class AttendanceRepositoryImpl implements AttendanceRepository {
       if (_isConnectivityError(e)) {
         return Right(await _queueCheckIn(shiftId: shiftId, lat: lat, lng: lng, deviceId: deviceId));
       }
-      return Left(ServerFailure(e.message ?? 'Network error'));
+      return Left(ServerFailure(e.response?.statusCode?.toString() ?? 'unknown', e.message ?? 'Network error'));
     }
   }
 
@@ -82,7 +82,7 @@ class AttendanceRepositoryImpl implements AttendanceRepository {
       if (_isConnectivityError(e)) {
         return Right(await _queueCheckOut(lat: lat, lng: lng));
       }
-      return Left(ServerFailure(e.message ?? 'Network error'));
+      return Left(ServerFailure(e.response?.statusCode?.toString() ?? 'unknown', e.message ?? 'Network error'));
     }
   }
 
@@ -95,7 +95,7 @@ class AttendanceRepositoryImpl implements AttendanceRepository {
       final records = await remoteDataSource.getMyAttendance(from: from, to: to);
       return Right(records);
     } on DioException catch (e) {
-      return Left(ServerFailure(e.message ?? 'Network error'));
+      return Left(ServerFailure(e.response?.statusCode?.toString() ?? 'unknown', e.message ?? 'Network error'));
     }
   }
 

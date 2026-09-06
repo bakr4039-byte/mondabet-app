@@ -18,7 +18,7 @@ class ReportRepositoryImpl implements ReportRepository {
       final result = await remoteDataSource.getAttendanceSummary(from: from, to: to);
       return Right(result);
     } on DioException catch (e) {
-      return Left(ServerFailure(e.message ?? 'Network error'));
+      return Left(ServerFailure(e.response?.statusCode?.toString() ?? 'unknown', e.message ?? 'Network error'));
     }
   }
 
@@ -32,7 +32,7 @@ class ReportRepositoryImpl implements ReportRepository {
       final path = await remoteDataSource.downloadReport(format: format, from: from, to: to);
       return Right(path);
     } on DioException catch (e) {
-      return Left(ServerFailure(e.message ?? 'Network error'));
+      return Left(ServerFailure(e.response?.statusCode?.toString() ?? 'unknown', e.message ?? 'Network error'));
     }
   }
 }

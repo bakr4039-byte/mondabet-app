@@ -1,4 +1,8 @@
-import 'package:easy_localization/easy_localization.dart';
+// easy_localization exports its own TextDirection class (an intl/Bidi text-direction
+// helper, not Flutter's enum) which otherwise shadows flutter/material.dart's
+// TextDirection.ltr/.rtl used below - hidden here since this file never needs
+// easy_localization's version.
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
