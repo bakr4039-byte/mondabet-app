@@ -59,13 +59,24 @@ dependencies:
 
   # DI
   get_it: ^8.0.2
-  injectable: ^2.4.4
+  injectable: ^3.0.0
 
   # File open
   path_provider: ^2.1.4
 
   # Utils
-  freezed_annotation: ^2.4.4
+  # freezed_annotation/freezed/json_annotation/json_serializable/injectable_generator
+  # aren't actually used anywhere in lib/ yet (no @freezed classes, no @InjectableInit,
+  # no generated .g.dart/.freezed.dart files exist - injectable's own @singleton
+  # annotation on ApiClient is likewise never processed; DI is wired by hand in
+  # core/di/injection.dart instead). Since nothing depends on their exact behavior,
+  # they're bumped here to current major versions rather than left pinned to their
+  # original ~2024 releases, which capped the analyzer package's version below what
+  # current Flutter/current plugins (like geolocator_android) require - forcing an
+  # awkward choice between an old Flutter pin (breaks newer plugins' Gradle setup)
+  # and these old codegen packages (breaks pub's dependency resolution). Bumping the
+  # unused side of that conflict removes the conflict entirely.
+  freezed_annotation: ^3.1.0
   json_annotation: ^4.9.0
   dartz: ^0.10.1
 
@@ -73,10 +84,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  build_runner: ^2.4.12
-  freezed: ^2.5.7
-  json_serializable: ^6.8.0
-  injectable_generator: ^2.6.2
+  build_runner: ^2.16.1
+  freezed: ^4.0.1
+  json_serializable: ^6.14.1
+  injectable_generator: ^3.1.3
   flutter_gen_runner: ^5.7.0
 
   # Testing
@@ -90,17 +101,3 @@ flutter:
   assets:
     - assets/images/
     - assets/translations/
-
-# geolocator's own version constraint on geolocator_android is wide enough that pub
-# always grabs its newest release - which, as of the geolocator_android 5.x line
-# (started March 2025), rewrote its android/build.gradle to require Android Gradle
-# Plugin 9.x and a Flutter Gradle-plugin extension mechanism that doesn't exist yet
-# in the Flutter/Dart generation the rest of this pubspec.yaml is pinned to (freezed
-# 2.5.7 / injectable_generator 2.6.2, which cap the analyzer version below what
-# current Flutter requires - see the CI workflow's comments for the full chain).
-# geolocator_android 4.6.2 is the last release before that rewrite and is what
-# geolocator was actually built and tested against in that same era, so pinning it
-# here (without touching geolocator's own version above) avoids the Gradle
-# incompatibility without any Dart source changes.
-dependency_overrides:
-  geolocator_android: 4.6.2

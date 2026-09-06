@@ -10,6 +10,16 @@ name: Build mobile APK
 # generates it fresh on every run with `flutter create --platforms=android .`
 # rather than requiring one to be committed - that keeps the repo Android/iOS-free
 # until someone deliberately wants to customize native project files.
+#
+# Uses the newest stable Flutter (no version pin) rather than an older release:
+# earlier attempts pinned Flutter down to work around an old analyzer-version cap
+# from a handful of unused codegen dev-dependencies (freezed/injectable_generator/
+# json_serializable/build_runner - none of them actually generate anything in this
+# app yet), but that broke newer plugins (geolocator_android in particular) that
+# expect current Flutter's Gradle setup. Since those codegen packages are unused,
+# pubspec.yaml bumps them to current versions instead - removing the conflict
+# entirely rather than picking a side of it, so both the newest Flutter and the
+# newest plugins work together normally.
 on:
   push:
     branches: [main]
@@ -34,17 +44,6 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          # Pinned instead of "channel: stable" (which floats to whatever Flutter
-          # ships today). The very first real run of this workflow failed pub's
-          # dependency resolver: freezed ^2.5.7 / injectable_generator ^2.6.2 (as
-          # pinned in pubspec.yaml) only support analyzer <8.0.0, while the newest
-          # stable Flutter pulls in a `test`/flutter_test combo that requires
-          # analyzer >=8.0.0 - an unsatisfiable gap that has nothing to do with
-          # this project's own code. 3.24.5 matches the Flutter/Dart generation
-          # this pubspec.yaml was actually written and pinned against, so pub
-          # resolves everything without needing to touch any app source or
-          # bump any package to a breaking major version.
-          flutter-version: "3.24.5"
           channel: stable
           cache: true
 
@@ -53,20 +52,6 @@ jobs:
           if [ ! -d android ]; then
             flutter create --platforms=android --org com.mondabet --project-name mondabet .
           fi
-
-      # geolocator_android 4.6.2 (pinned via dependency_overrides in pubspec.yaml, since
-      # newer 5.x needs Flutter 3.29+ - see that override's comment) still reads
-      # compileSdkVersion the classic way: as a plain "flutter.compileSdkVersion=NN" line
-      # in android/local.properties, not from the newer Kotlin-based Flutter Gradle plugin
-      # extension. Flutter 3.24.5's `flutter create` (pinned above for a separate, earlier
-      # pub dependency conflict) never writes that key at all, so the plugin read null and
-      # crashed with "Cannot invoke method substring() on null object". A previous commit
-      # tried this same fix but tested it against the wrong (still-unpinned, 5.x) version of
-      # geolocator_android, where it understandably made no difference - now that the
-      # version pin above is confirmed to actually apply (checked in the Actions log), this
-      # should be the missing piece for 4.6.2 specifically.
-      - name: Ensure local.properties declares flutter.compileSdkVersion
-        run: echo 'flutter.compileSdkVersion=34' >> android/local.properties
 
       # Optional: only present once the user adds a GOOGLE_SERVICES_JSON repo secret
       # (base64-encoded contents of their Firebase Android app's google-services.json).
@@ -91,22 +76,7 @@ jobs:
         run: flutter pub get
 
       - name: Build release APK
-        id: build
         run: flutter build apk --release
-        continue-on-error: true
-
-      # Two guesses at this same error's cause (a local.properties key, an
-      # afterEvaluate patch) have now failed in a row, both based on reading the
-      # plugin's source from outside the exact failing environment. Rather than
-      # guess a third time, this prints Gradle's own full stack trace (with real
-      # file/line numbers) straight from this run if the normal build failed, so
-      # the actual cause can be read directly instead of inferred.
-      - name: If the build failed, get Gradle's full stack trace for diagnosis
-        if: steps.build.outcome == 'failure'
-        working-directory: mobile/android
-        run: |
-          ./gradlew :geolocator_android:assembleRelease --stacktrace || true
-          exit 1
 
       - uses: actions/upload-artifact@v4
         with:
