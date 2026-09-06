@@ -11,6 +11,19 @@ isn't committed to the repo (it's generated fresh on every CI run - see
 generated file in place. It's idempotent (safe to run more than once) and
 handles both of Flutter's current templates: Groovy (build.gradle) and
 Kotlin DSL (build.gradle.kts).
+
+Two separate things have to happen, in two different Gradle blocks:
+  1. `compileOptions { coreLibraryDesugaringEnabled true }` - turns the
+     feature on. Flutter's template always has a `compileOptions {}` block
+     (it sets source/targetCompatibility), so this is a safe in-place edit.
+  2. A dependency on the desugaring runtime library, in the
+     `coreLibraryDesugaring` configuration. Flutter's newer templates don't
+     always have an existing top-level `dependencies {}` block to inject
+     into (unlike compileOptions) - trying to find-and-replace one silently
+     does nothing when it's absent. Gradle allows more than one
+     `dependencies {}` block per file (they're merged), so instead of
+     searching for one, this just appends a brand new block at the end of
+     the file. That works whether or not the template already had one.
 """
 import pathlib
 import sys
@@ -31,14 +44,14 @@ if groovy_path.exists():
             1,
         )
     if "coreLibraryDesugaring " not in text:
-        text = text.replace(
-            "dependencies {",
-            "dependencies {\n    coreLibraryDesugaring "
-            f"'com.android.tools:desugar_jdk_libs:{DESUGAR_JDK_LIBS_VERSION}'",
-            1,
+        text += (
+            "\ndependencies {\n"
+            f"    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:{DESUGAR_JDK_LIBS_VERSION}'\n"
+            "}\n"
         )
 
     path.write_text(text)
+    assert "coreLibraryDesugaringEnabled" in text and "coreLibraryDesugaring " in text
     print(f"Patched {path} for core library desugaring")
 
 elif kotlin_path.exists():
@@ -52,14 +65,14 @@ elif kotlin_path.exists():
             1,
         )
     if "coreLibraryDesugaring(" not in text:
-        text = text.replace(
-            "dependencies {",
-            "dependencies {\n    coreLibraryDesugaring("
-            f'"com.android.tools:desugar_jdk_libs:{DESUGAR_JDK_LIBS_VERSION}")',
-            1,
+        text += (
+            "\ndependencies {\n"
+            f'    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:{DESUGAR_JDK_LIBS_VERSION}")\n'
+            "}\n"
         )
 
     path.write_text(text)
+    assert "isCoreLibraryDesugaringEnabled" in text and "coreLibraryDesugaring(" in text
     print(f"Patched {path} for core library desugaring")
 
 else:
