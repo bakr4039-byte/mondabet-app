@@ -66,21 +66,26 @@ jobs:
       # subproject that doesn't already declare one - it only fills in what's genuinely
       # missing, so a plugin that already sets its own (possibly higher) value is untouched.
       - name: Ensure plugin subprojects have a compileSdkVersion
+        # Written as individual `echo` lines rather than a heredoc: a heredoc's raw,
+        # unindented body breaks YAML's block-scalar indentation rules for `run: |`
+        # (this is exactly what made the previous commit's workflow file invalid -
+        # "you have an error in your yaml syntax" - since every line here has to stay
+        # indented at least as much as this step's other lines for YAML to parse it).
         run: |
-          cat >> android/build.gradle <<'EOF'
-
-subprojects { subproject ->
-    afterEvaluate {
-        if (subproject.hasProperty('android')) {
-            try {
-                if (subproject.android.compileSdkVersion == null) {
-                    subproject.android.compileSdkVersion = 34
-                }
-            } catch (ignored) {}
-        }
-    }
-}
-EOF
+          {
+            echo ''
+            echo 'subprojects { subproject ->'
+            echo '    afterEvaluate {'
+            echo '        if (subproject.hasProperty("android")) {'
+            echo '            try {'
+            echo '                if (subproject.android.compileSdkVersion == null) {'
+            echo '                    subproject.android.compileSdkVersion = 34'
+            echo '                }'
+            echo '            } catch (ignored) {}'
+            echo '        }'
+            echo '    }'
+            echo '}'
+          } >> android/build.gradle
 
       # Optional: only present once the user adds a GOOGLE_SERVICES_JSON repo secret
       # (base64-encoded contents of their Firebase Android app's google-services.json).
