@@ -78,6 +78,9 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Patch plugin compileSdk versions (AAR metadata requires >= 36)
+        run: python3 scripts/patch_plugin_compile_sdk.py
+
       - name: Build release APK
         run: flutter build apk --release
 
