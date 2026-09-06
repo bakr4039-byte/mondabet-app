@@ -90,3 +90,17 @@ flutter:
   assets:
     - assets/images/
     - assets/translations/
+
+# geolocator's own version constraint on geolocator_android is wide enough that pub
+# always grabs its newest release - which, as of the geolocator_android 5.x line
+# (started March 2025), rewrote its android/build.gradle to require Android Gradle
+# Plugin 9.x and a Flutter Gradle-plugin extension mechanism that doesn't exist yet
+# in the Flutter/Dart generation the rest of this pubspec.yaml is pinned to (freezed
+# 2.5.7 / injectable_generator 2.6.2, which cap the analyzer version below what
+# current Flutter requires - see the CI workflow's comments for the full chain).
+# geolocator_android 4.6.2 is the last release before that rewrite and is what
+# geolocator was actually built and tested against in that same era, so pinning it
+# here (without touching geolocator's own version above) avoids the Gradle
+# incompatibility without any Dart source changes.
+dependency_overrides:
+  geolocator_android: 4.6.2

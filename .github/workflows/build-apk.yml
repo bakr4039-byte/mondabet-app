@@ -54,20 +54,6 @@ jobs:
             flutter create --platforms=android --org com.mondabet --project-name mondabet .
           fi
 
-      # geolocator_android (pulled in by geolocator ^13.0.1) keeps getting updated for new
-      # Android APIs independently of any Flutter version, and its build.gradle reads
-      # flutter.compileSdkVersion directly out of android/local.properties WHILE it's
-      # configuring itself - not lazily, so the afterEvaluate-based fix tried in an earlier
-      # commit never actually ran in time (the crash happens during the plugin's own
-      # synchronous evaluation, before any afterEvaluate callback would fire). Flutter
-      # 3.24.5's `flutter create` (pinned above, needed for the earlier pub dependency
-      # conflict) never writes that key into local.properties at all, so the plugin's own
-      # code read null and crashed with "Cannot invoke method substring() on null object".
-      # This just appends the missing key with the value Flutter 3.24.5's own Gradle setup
-      # already defaults to (34) - it doesn't touch pubspec.yaml or any Dart source.
-      - name: Ensure local.properties declares flutter.compileSdkVersion
-        run: echo 'flutter.compileSdkVersion=34' >> android/local.properties
-
       # Optional: only present once the user adds a GOOGLE_SERVICES_JSON repo secret
       # (base64-encoded contents of their Firebase Android app's google-services.json).
       # Without it, Firebase/FCM push notifications just stay inactive - main.dart's
