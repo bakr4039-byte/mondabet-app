@@ -91,7 +91,22 @@ jobs:
         run: flutter pub get
 
       - name: Build release APK
+        id: build
         run: flutter build apk --release
+        continue-on-error: true
+
+      # Two guesses at this same error's cause (a local.properties key, an
+      # afterEvaluate patch) have now failed in a row, both based on reading the
+      # plugin's source from outside the exact failing environment. Rather than
+      # guess a third time, this prints Gradle's own full stack trace (with real
+      # file/line numbers) straight from this run if the normal build failed, so
+      # the actual cause can be read directly instead of inferred.
+      - name: If the build failed, get Gradle's full stack trace for diagnosis
+        if: steps.build.outcome == 'failure'
+        working-directory: mobile/android
+        run: |
+          ./gradlew :geolocator_android:assembleRelease --stacktrace || true
+          exit 1
 
       - uses: actions/upload-artifact@v4
         with:
