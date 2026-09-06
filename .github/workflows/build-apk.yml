@@ -55,48 +55,18 @@ jobs:
           fi
 
       # geolocator_android (pulled in by geolocator ^13.0.1) keeps getting updated for new
-      # Android APIs independently of any Flutter version, and its build.gradle expects a
-      # compileSdkVersion to already be set on it - something the *older* Flutter 3.24.5
-      # project template (pinned above, needed for the pub dependency conflict) never
-      # configures for plugin subprojects. That combination is what produced "Cannot invoke
-      # method substring() on null object / compileSdkVersion is not specified" for
-      # :geolocator_android specifically. Rather than touch pubspec.yaml (downgrading
-      # geolocator risks losing GPS/geofencing behavior this app depends on), this patches
-      # the freshly generated android/build.gradle to set compileSdkVersion 34 on any plugin
-      # subproject that doesn't already declare one - it only fills in what's genuinely
-      # missing, so a plugin that already sets its own (possibly higher) value is untouched.
-      - name: Ensure plugin subprojects have a compileSdkVersion
-        # Written as individual `echo` lines rather than a heredoc: a heredoc's raw,
-        # unindented body breaks YAML's block-scalar indentation rules for `run: |`
-        # (this is exactly what made an earlier commit's workflow file invalid -
-        # "you have an error in your yaml syntax" - since every line here has to stay
-        # indented at least as much as this step's other lines for YAML to parse it).
-        #
-        # Skips the "app" subproject deliberately: Flutter's own template already
-        # does `project.evaluationDependsOn(':app')` for every subproject, which
-        # forces :app to fully evaluate very early - by the time this block's
-        # afterEvaluate tried to attach to :app too, Gradle had already finished
-        # evaluating it and threw "Cannot run Project.afterEvaluate(Closure) when
-        # the project is already evaluated". :app also isn't the problem anyway
-        # (it already gets compileSdkVersion via flutter.compileSdkVersion) - only
-        # plugin subprojects like :geolocator_android need this filled in.
-        run: |
-          {
-            echo ''
-            echo 'subprojects { subproject ->'
-            echo '    if (subproject.name != "app") {'
-            echo '        afterEvaluate {'
-            echo '            if (subproject.hasProperty("android")) {'
-            echo '                try {'
-            echo '                    if (subproject.android.compileSdkVersion == null) {'
-            echo '                        subproject.android.compileSdkVersion = 34'
-            echo '                    }'
-            echo '                } catch (ignored) {}'
-            echo '            }'
-            echo '        }'
-            echo '    }'
-            echo '}'
-          } >> android/build.gradle
+      # Android APIs independently of any Flutter version, and its build.gradle reads
+      # flutter.compileSdkVersion directly out of android/local.properties WHILE it's
+      # configuring itself - not lazily, so the afterEvaluate-based fix tried in an earlier
+      # commit never actually ran in time (the crash happens during the plugin's own
+      # synchronous evaluation, before any afterEvaluate callback would fire). Flutter
+      # 3.24.5's `flutter create` (pinned above, needed for the earlier pub dependency
+      # conflict) never writes that key into local.properties at all, so the plugin's own
+      # code read null and crashed with "Cannot invoke method substring() on null object".
+      # This just appends the missing key with the value Flutter 3.24.5's own Gradle setup
+      # already defaults to (34) - it doesn't touch pubspec.yaml or any Dart source.
+      - name: Ensure local.properties declares flutter.compileSdkVersion
+        run: echo 'flutter.compileSdkVersion=34' >> android/local.properties
 
       # Optional: only present once the user adds a GOOGLE_SERVICES_JSON repo secret
       # (base64-encoded contents of their Firebase Android app's google-services.json).
