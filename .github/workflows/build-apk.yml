@@ -81,6 +81,22 @@ jobs:
       - name: Patch plugin compileSdk versions (AAR metadata requires >= 36)
         run: python3 scripts/patch_plugin_compile_sdk.py
 
+      # TEMPORARY diagnostic: the same "compiled against android-34" error kept
+      # recurring unchanged across several attempts at fixing it blindly, which
+      # means those attempts weren't actually reaching the file Gradle reads.
+      # This prints the real file instead of guessing again - remove once the
+      # compileSdk issue is confirmed fixed.
+      - name: Show file_picker's actual build.gradle (diagnostic)
+        continue-on-error: true
+        run: |
+          echo "PUB_CACHE=${PUB_CACHE:-<unset, defaults to ~/.pub-cache>}"
+          echo "--- locating file_picker's build.gradle(.kts) ---"
+          find "${PUB_CACHE:-$HOME/.pub-cache}" -ipath "*file_picker*android/build.gradle*" 2>/dev/null
+          echo "--- its contents ---"
+          find "${PUB_CACHE:-$HOME/.pub-cache}" -ipath "*file_picker*android/build.gradle*" -exec echo "== {} ==" \; -exec cat {} \; 2>/dev/null
+          echo "--- every plugin build.gradle(.kts) mentioning compileSdk ---"
+          grep -rn "compileSdk" "${PUB_CACHE:-$HOME/.pub-cache}/hosted" --include="build.gradle" --include="build.gradle.kts" 2>/dev/null
+
       - name: Build release APK
         run: flutter build apk --release
 
