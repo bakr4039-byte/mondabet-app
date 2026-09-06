@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Patches the freshly-scaffolded android/app/build.gradle(.kts).
+"""Patches the freshly-scaffolded mobile/android/ project.
 
 mobile/android/ isn't committed to the repo - it's generated fresh on every
 CI run via `flutter create --platforms=android .` (see
@@ -22,15 +22,22 @@ Fixes applied:
      appended as a brand new `dependencies {}` block instead of injected
      into an existing one, since Flutter's newer templates don't reliably
      have one to inject into, and Gradle merges multiple such blocks fine.
-  2. compileSdk bumped to at least 36: flutter_plugin_android_lifecycle (a
-     transitive dependency of several plugins, e.g. file_picker,
-     geolocator_android) requires compiling against API 36+, but Flutter's
-     own bundled `flutter.compileSdkVersion` default hasn't caught up to
-     that yet. Uses max(flutter's default, 36) rather than hardcoding 36
-     outright, so this stops being needed on its own once Flutter's
-     default catches up.
+  2. flutter.compileSdkVersion raised to 36 in android/local.properties.
+     flutter_plugin_android_lifecycle (a transitive dependency of several
+     plugins - file_picker, geolocator_android, etc.) requires compiling
+     against API 36+, but Flutter's own bundled default hasn't caught up
+     to that yet. `flutter.compileSdkVersion` is a single project-wide
+     value read from local.properties by the Flutter Gradle plugin and
+     shared by every subproject - including third-party plugins pulled
+     from the pub cache, which we can't edit directly since they're not
+     part of this repo. Overriding just android/app/build.gradle's own
+     compileSdk (an earlier version of this fix) only changed the app
+     module's value, not this shared one, so plugin subprojects like
+     :file_picker kept compiling against the old default regardless -
+     local.properties is the one override point that reaches all of them.
 """
 import pathlib
+import re
 import sys
 
 DESUGAR_JDK_LIBS_VERSION = "2.1.4"
@@ -38,6 +45,7 @@ MIN_COMPILE_SDK = 36
 
 groovy_path = pathlib.Path("android/app/build.gradle")
 kotlin_path = pathlib.Path("android/app/build.gradle.kts")
+local_properties_path = pathlib.Path("android/local.properties")
 
 
 def patch_groovy(text: str) -> str:
@@ -53,14 +61,7 @@ def patch_groovy(text: str) -> str:
             f"    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:{DESUGAR_JDK_LIBS_VERSION}'\n"
             "}\n"
         )
-    if "compileSdkVersion flutter.compileSdkVersion" in text:
-        text = text.replace(
-            "compileSdkVersion flutter.compileSdkVersion",
-            f"compileSdkVersion Math.max(flutter.compileSdkVersion, {MIN_COMPILE_SDK})",
-            1,
-        )
     assert "coreLibraryDesugaringEnabled" in text and "coreLibraryDesugaring " in text
-    assert "flutter.compileSdkVersion" not in text or f"Math.max(flutter.compileSdkVersion, {MIN_COMPILE_SDK})" in text
     return text
 
 
@@ -77,14 +78,19 @@ def patch_kotlin(text: str) -> str:
             f'    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:{DESUGAR_JDK_LIBS_VERSION}")\n'
             "}\n"
         )
-    if "compileSdk = flutter.compileSdkVersion" in text:
-        text = text.replace(
-            "compileSdk = flutter.compileSdkVersion",
-            f"compileSdk = maxOf(flutter.compileSdkVersion, {MIN_COMPILE_SDK})",
-            1,
-        )
     assert "isCoreLibraryDesugaringEnabled" in text and "coreLibraryDesugaring(" in text
-    assert "flutter.compileSdkVersion" not in text or f"maxOf(flutter.compileSdkVersion, {MIN_COMPILE_SDK})" in text
+    return text
+
+
+def patch_local_properties(text: str) -> str:
+    line = f"flutter.compileSdkVersion={MIN_COMPILE_SDK}"
+    if re.search(r"^flutter\.compileSdkVersion=", text, flags=re.MULTILINE):
+        text = re.sub(r"^flutter\.compileSdkVersion=.*$", line, text, flags=re.MULTILINE)
+    else:
+        if text and not text.endswith("\n"):
+            text += "\n"
+        text += line + "\n"
+    assert line in text
     return text
 
 
@@ -101,3 +107,11 @@ else:
         "Neither android/app/build.gradle nor build.gradle.kts found - "
         "was the 'Scaffold Android platform' step run first?"
     )
+
+if not local_properties_path.exists():
+    sys.exit(
+        "android/local.properties not found - was the 'Scaffold Android "
+        "platform' step run first?"
+    )
+local_properties_path.write_text(patch_local_properties(local_properties_path.read_text()))
+print(f"Patched {local_properties_path} (flutter.compileSdkVersion={MIN_COMPILE_SDK})")
