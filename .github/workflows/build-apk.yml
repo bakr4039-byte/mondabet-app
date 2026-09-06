@@ -53,6 +53,9 @@ jobs:
             flutter create --platforms=android --org com.mondabet --project-name mondabet .
           fi
 
+      - name: Enable core library desugaring (flutter_local_notifications requires it)
+        run: python3 scripts/enable_desugaring.py
+
       # Optional: only present once the user adds a GOOGLE_SERVICES_JSON repo secret
       # (base64-encoded contents of their Firebase Android app's google-services.json).
       # Without it, Firebase/FCM push notifications just stay inactive - main.dart's
