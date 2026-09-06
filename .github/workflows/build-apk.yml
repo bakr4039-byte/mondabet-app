@@ -54,6 +54,20 @@ jobs:
             flutter create --platforms=android --org com.mondabet --project-name mondabet .
           fi
 
+      # geolocator_android 4.6.2 (pinned via dependency_overrides in pubspec.yaml, since
+      # newer 5.x needs Flutter 3.29+ - see that override's comment) still reads
+      # compileSdkVersion the classic way: as a plain "flutter.compileSdkVersion=NN" line
+      # in android/local.properties, not from the newer Kotlin-based Flutter Gradle plugin
+      # extension. Flutter 3.24.5's `flutter create` (pinned above for a separate, earlier
+      # pub dependency conflict) never writes that key at all, so the plugin read null and
+      # crashed with "Cannot invoke method substring() on null object". A previous commit
+      # tried this same fix but tested it against the wrong (still-unpinned, 5.x) version of
+      # geolocator_android, where it understandably made no difference - now that the
+      # version pin above is confirmed to actually apply (checked in the Actions log), this
+      # should be the missing piece for 4.6.2 specifically.
+      - name: Ensure local.properties declares flutter.compileSdkVersion
+        run: echo 'flutter.compileSdkVersion=34' >> android/local.properties
+
       # Optional: only present once the user adds a GOOGLE_SERVICES_JSON repo secret
       # (base64-encoded contents of their Firebase Android app's google-services.json).
       # Without it, Firebase/FCM push notifications just stay inactive - main.dart's
